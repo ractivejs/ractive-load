@@ -1,0 +1,12 @@
+{
+	"name": "ractive.load",
+	"version": "0.1.0",
+	"author": "Rich Harris",
+	"main": "Ractive.load.js",
+	"ignore": [
+		"**/.*",
+		"src",
+		"test",
+		"Gruntfile.js"
+	]
+}

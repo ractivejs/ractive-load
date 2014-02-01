@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang='en-GB'>
+<head>
+	<meta charset='utf-8'>
+	<title>Ractive.js load event plugin</title>
+
+	<!-- CSS -->
+	<link href='http://fonts.googleapis.com/css?family=Voltaire' rel='stylesheet' type='text/css'>
+	<link rel='stylesheet' href='demo/main.css'>
+
+	<!-- TODO add styles specific to this demo -->
+	<style type='text/css'>
+
+	</style>
+</head>
+
+<body>
+
+	<!-- if the project is on GitHub, add a fork me button! -->
+	<a class='forkme' href='https://github.com/RactiveJS/Ractive.load'>Fork me on GitHub</a>
+
+	<header>
+		<h1>Ractive.js load event plugin</h1>
+		<p class='strap'>
+			<span class='download'>download: <a href='[TODO]'>Ractive.load.js</a></span>
+			<span class='more-plugins'>more plugins at <a href='http://ractivejs.org/plugins'>ractivejs.org/plugins</a></span>
+		</p>
+	</header>
+
+	<main>
+		<p><em>Warning: this represents work in progress! The spec for single-file components will likely change before it can be considered stable, and you may need to use the development version of Ractive (currently <a href='https://github.com/RactiveJS/Ractive/tree/0.4.0/build'>0.4.0</a>. If you'd like to get involved, <a href='https://github.com/RactiveJS/Ractive/issues/366'>join this thread</a>.</em></p>
+
+		<p>Description coming soon!</p>
+
+
+
+		<div id='demo' class='clearfix'></div>
+
+		<pre id='demo-template-view' class='prettyprint lang-html'></pre>
+		<pre id='demo-code-view' class='prettyprint lang-js'></pre>
+	</main>
+
+	<!-- add additional info such as your homepage here, if you want -->
+	<footer>
+		<p>Copyright &copy; 2014 Rich Harris. Licensed MIT</p>
+	</footer>
+
+	<!-- Demo template -->
+	<script id='demo-template' type='text/ractive'>
+		<h2>GitHub cards</h2>
+		<p>Via <a href='http://lab.lepture.com/github-cards/'>lab.lepture.com/github-cards</a>. Try entering your own name and one of your repos.</p>
+
+		<label><input placeholder='GitHub username' value='{{user_name}}' tabindex='1'> username</label>
+		<github-card user='{{user_name}}'/>
+
+		<label><input placeholder='Repository name' value='{{repo_name}}' tabindex='1'> repository</label>
+		<github-card user='{{user_name}}' repo='{{repo_name}}'/>
+	</script>
+
+	<!-- Dependencies -->
+	<script src='lib/Ractive-legacy.js'></script>
+	<script src='Ractive.load.js'></script>
+
+	<!-- Demo code -->
+	<script id='demo-code'>
+		Ractive.load( 'demo/github-card.html' ).then( function ( GithubCard ) {
+			Ractive.components[ 'github-card' ] = GithubCard;
+
+			var ractive = new Ractive({
+				el: 'demo',
+				template: '#demo-template',
+				data: {
+					user_name: 'RactiveJS',
+					repo_name: 'Ractive'
+				},
+				lazy: true // only update when inputs blur
+			});
+		});
+	</script>
+
+	<!-- Insert code into the page -->
+	<script src='demo/prettify.js'></script>
+	<script src='demo/demo.js'></script>
+</body>
+</html>

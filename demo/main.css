@@ -1,0 +1,236 @@
+body {
+	font-size: 16px;
+	color: #353535;
+	line-height: 1.5;
+	padding: 2em 1em 2em 1em;
+	font-family: 'Baskerville', 'Book Antiqua', 'Georgia';
+	width: 100%;
+	min-width: 32em;
+	max-width: 48em;
+	margin: 0 auto;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
+h1, h2 {
+	font-family: 'Voltaire';
+	font-weight: normal;
+}
+
+header {
+	line-height: 1;
+	margin: 0 0 1em 0;
+}
+
+.strap:before,
+.strap:after {
+    content: ' ';
+    display: table;
+}
+.strap:after {
+    clear: both;
+}
+
+header h1 {
+	display: inline-block;
+	margin: 0 0 0.5em 0;
+}
+
+header p {
+	padding: 0;
+	margin: 0 0 2em 0;
+	padding: 0.5em 0.5em 0 0.5em;
+	background-color: rgb(249,252,246);
+	border-top: 1px solid rgba(0,0,0,0.05);
+	border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+header span {
+	margin: 0 0 0.5em 0;
+}
+
+header .download {
+	float: left;
+}
+
+header .more-plugins {
+	float: right;
+}
+
+code {
+	font-family: 'Source Code Pro', monospace;
+	border: 1px solid #eee;
+	border-radius: 0.2em;
+	background-color: rgb(249,252,246);;
+	color: #444;
+	font-weight: normal;
+	font-size: 0.8em;
+	padding: 0.15em 0.3em;
+	position: relative;
+}
+
+a {
+	color: #729d34;
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:visited {
+	color: #729d34;
+}
+
+.logo {
+	font-family: Voltaire;
+}
+
+#demo, pre {
+	display: block;
+	padding: 0.5em;
+	margin: 0 0 1em 0;
+	border: 1px solid #eee;
+	border-radius: 0.2em;
+}
+
+pre {
+	white-space: pre;
+	font-family: 'Source Code Pro', monospace;
+	font-size: 14px;
+	background-color: rgb(249,252,246);
+	overflow-x: auto;
+}
+
+pre:before, #demo:before {
+	content: 'demo';
+	display: block;
+	border-bottom: 1px solid rgb(240,240,240);
+	padding: 0 0 0.2em 0;
+	font-family: 'Voltaire', 'Arial';
+	font-weight: bold;
+	margin-bottom: 1em;
+	color: #444;
+}
+
+pre.lang-html:before {
+	content: 'template';
+}
+
+pre.lang-js:before {
+	content: 'code';
+}
+
+.prettyprinted {
+	color: #444;
+}
+
+.prettyprint .pln { color: #444; }
+.prettyprint .pun { color: #888; }
+.prettyprint .str { color: #729d34; }
+.prettyprint .kwd { color: rgb(0,0,100); }
+.prettyprint .typ { color: rgb(0,0,100); }
+.prettyprint .tag { color: rgb(0,0,100); }
+.prettyprint .atn { color: rgb(80,80,180) }
+.prettyprint .atv { color: #729d34 }
+.prettyprint .lit { color: rgb(150,0,0) }
+.prettyprint .com { color: #aaa }
+
+.prettyprint.lang-js .pun {
+	color: #444;
+}
+
+footer {
+	text-align: center;
+	margin: 2em 0 0 0;
+	padding: 1em;
+	border-top: 1px solid #eee;
+}
+
+#demo {
+	position: relative;
+	margin: 2em 0 1em 0;
+}
+
+#demo h2 {
+	margin: 0 0 0.5em 0;
+}
+
+a.forkme {
+	position: fixed;
+	left: 3.5em;
+	top: 3.5em;
+	background-color: #888;
+	padding: 0.2em 0;
+	width: 15em;
+	text-align: center;
+	color: white;
+	-webkit-transform: translate(-50%,-50%) rotate(-45deg);
+	-moz-transform: translate(-50%,-50%) rotate(-45deg);
+	-ms-transform: translate(-50%,-50%) rotate(-45deg);
+	-o-transform: translate(-50%,-50%) rotate(-45deg);
+	transform: translate(-50%,-50%) rotate(-45deg);
+	font-family: Voltaire;
+	font-weight: bold;
+	box-shadow: 0 1px 4px rgba(0,0,0,0.4);
+	opacity: 0;
+	display: none;
+	z-index: 2;
+
+	-webkit-transition: opacity 0.5s;
+	-moz-transition: opacity 0.5s;
+	-ms-transition: opacity 0.5s;
+	-o-transition: opacity 0.5s;
+	transition: opacity 0.5s;
+}
+
+.transforms-enabled a.forkme {
+	display: block;
+}
+
+.forkme:before, .forkme:after {
+	content: '';
+	display: block;
+	width: 100%;
+	border-top: 1px dashed white;
+}
+
+@media screen and (min-width: 56em) {
+	a.forkme {
+		opacity: 1;
+	}
+}
+
+.clearfix:before,
+.clearfix:after {
+	content: " "; /* 1 */
+	display: table; /* 2 */
+}
+
+.clearfix:after {
+	clear: both;
+}
+
+label {
+	display: block;
+	margin: 0 0 0.5em 0;
+	color: #aaa;
+}
+
+input {
+	font-size: inherit;
+	font-family: inherit;
+	padding: 0.2em;
+	border-radius: 0.2em;
+	border: 1px solid #f0f0f0;
+	background-color: #fafafa;
+	width: 6em;
+	margin: 0 0.5em 0 0;
+}
+
+input:focus {
+	background-color: #eee;
+	border: 1px solid #729d34;
+	outline: none;
+}

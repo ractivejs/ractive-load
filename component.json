@@ -1,0 +1,14 @@
+{
+	"name": "ractive.load",
+	"repo": "https://github.com/RactiveJS/Ractive.load",
+	"description": "Ractive.load",
+	"version": "0.1.0",
+	"keywords": [],
+	"dependencies": {},
+	"development": {},
+	"license": "MIT",
+	"main": "Ractive.load.js",
+	"scripts": [
+		"Ractive.load.js"
+	]
+}
