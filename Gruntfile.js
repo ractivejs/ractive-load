@@ -1,78 +1,32 @@
+/*global module:false*/
 module.exports = function ( grunt ) {
 
-	grunt.initConfig({
+	'use strict';
 
-		pkg: grunt.file.readJSON( 'package.json' ),
+	var config, dependency;
 
-		jshint: {
-			main: 'src/**/*.js',
-			options: {
-				strict: true,
-				unused: true,
-				undef: true,
-				smarttabs: true,
-				boss: true,
-				globals: {
-					define: true,
-					module: true,
-					require: true,
-					window: true,
-					document: true,
-					XMLHttpRequest: true
-				}
-			}
-		},
+	config = {
+		pkg: grunt.file.readJSON( 'package.json' )
+	};
 
-		concat: {
-			bundle: {
-				src: 'src/Ractive.load.js',
-				dest: 'tmp/Ractive.load.js'
-			},
-			options: {
-				process: {
-					data: {
-						VERSION: '<%= pkg.version %>'
-					}
-				}
-			}
-		},
-
-		qunit: {
-			files: [ 'test/index.html' ]
-		},
-
-		uglify: {
-			bundle: {
-				src: 'tmp/Ractive.load.js',
-				dest: 'tmp/Ractive.load.min.js'
-			}
-		},
-
-		copy: {
-			bundle: {
-				files: [{
-					cwd: 'tmp/',
-					src: '*.js',
-					dest: '',
-					expand: true
-				}]
-			}
-		}
-
+	// Read config files from the `grunt/config/` folder
+	grunt.file.expand( 'grunt/config/*.js' ).forEach( function ( path ) {
+		var property = /grunt\/config\/(.+)\.js/.exec( path )[1],
+			module = require( './' + path );
+		config[ property ] = typeof module === 'function' ? module( grunt ) : module;
 	});
 
-	grunt.loadNpmTasks( 'grunt-contrib-jshint' );
-	grunt.loadNpmTasks( 'grunt-contrib-concat' );
-	grunt.loadNpmTasks( 'grunt-contrib-qunit' );
-	grunt.loadNpmTasks( 'grunt-contrib-uglify' );
-	grunt.loadNpmTasks( 'grunt-contrib-copy' );
+	// Initialise grunt
+	grunt.initConfig( config );
 
-	grunt.registerTask( 'default', [
-		'jshint',
-		'concat',
-		'qunit',
-		'uglify',
-		'copy'
-	]);
+	// Load development dependencies specified in package.json
+	for ( dependency in config.pkg.devDependencies ) {
+		if ( /^grunt-/.test( dependency) ) {
+			grunt.loadNpmTasks( dependency );
+		}
+	}
+
+	// Load tasks from the `grunt-tasks/` folder
+	grunt.loadTasks( 'grunt/tasks' );
 
 };
