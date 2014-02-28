@@ -5,6 +5,12 @@
     "name": "Rich Harris"
   },
   "main": "Ractive.load.js",
+  "description": "Component loader plugin for Ractive.js",
+  "jam": {
+    "dependencies": {
+      "Ractive": ">= 0.4.0"
+    }
+  },
   "devDependencies": {
     "grunt": "~0.4.1",
     "grunt-contrib-concat": "~0.3.0",
