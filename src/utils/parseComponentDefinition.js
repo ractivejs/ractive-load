@@ -1,6 +1,6 @@
 define([
 	'utils/getName',
-	'helpers/extractFragment'
+	'utils/extractFragment'
 ], function (
 	getName,
 	extractFragment

@@ -1,13 +1,12 @@
 define([
 	'utils/warn',
-	'helpers/parseComponentDefinition',
-	'helpers/ractiveRequire',
-	'helpers/loadSubComponents'
+	'utils/parseComponentDefinition',
+	'utils/ractiveRequire',
+	'utils/loadSubComponents'
 ], function (
 	warn,
 	parseComponentDefinition,
-	ractiveRequire,
-	loadSubComponents
+	ractiveRequire
 ) {
 
 	'use strict';
