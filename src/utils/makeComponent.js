@@ -1,9 +1,12 @@
 define([
+	'utils/get',
+	'utils/resolvePath',
 	'utils/warn',
 	'utils/parseComponentDefinition',
-	'utils/ractiveRequire',
-	'utils/loadSubComponents'
+	'utils/ractiveRequire'
 ], function (
+	get,
+	resolvePath,
 	warn,
 	parseComponentDefinition,
 	ractiveRequire
@@ -12,9 +15,10 @@ define([
 	'use strict';
 
 	var noConflict = {},
-		head = document.getElementsByTagName( 'head' )[0];
+		head = document.getElementsByTagName( 'head' )[0],
+		makeComponent;
 
-	return function makeComponent ( source, baseUrl ) {
+	makeComponent = function ( source, baseUrl ) {
 		var definition;
 
 		definition = parseComponentDefinition( source );
@@ -80,6 +84,35 @@ define([
 			return Component;
 		});
 	};
+
+	return makeComponent;
+
+
+	function loadSubComponents ( imports, baseUrl ) {
+		return new Ractive.Promise( function ( resolve, reject ) {
+			var remaining = imports.length, result = {};
+
+			imports.forEach( function ( toImport ) {
+				var resolvedPath;
+
+				resolvedPath = resolvePath( toImport.href, baseUrl );
+
+				get( resolvedPath ).then( function ( template ) {
+					return makeComponent( template, resolvedPath );
+				}).then( function ( Component ) {
+					result[ toImport.name ] = Component;
+
+					if ( !--remaining ) {
+						resolve( result );
+					}
+				}, reject );
+			});
+
+			if ( !remaining ) {
+				resolve( result );
+			}
+		});
+	}
 
 
 });

@@ -1,6 +1,6 @@
 /*
 
-	Ractive.load - v0.1.1 - 2014-02-24
+	Ractive.load - v0.1.1 - 2014-03-02
 	===================================================================
 
 	Next-generation DOM manipulation - http://ractivejs.org
@@ -141,11 +141,11 @@
 		return function() {};
 	}();
 
-	var helpers_extractFragment = function extractFragment( item ) {
+	var utils_extractFragment = function extractFragment( item ) {
 		return item.f;
 	};
 
-	var helpers_parseComponentDefinition = function( getName, extractFragment ) {
+	var utils_parseComponentDefinition = function( getName, extractFragment ) {
 
 		var requirePattern = /require\s*\(\s*(?:"([^"]+)"|'([^']+)')\s*\)/g;
 		return function parseComponentDefinition( source ) {
@@ -198,9 +198,9 @@
 				modules: modules
 			};
 		};
-	}( utils_getName, helpers_extractFragment );
+	}( utils_getName, utils_extractFragment );
 
-	var helpers_ractiveRequire = function ractiveRequire( name ) {
+	var utils_ractiveRequire = function ractiveRequire( name ) {
 		var dependency, qualified;
 		dependency = Ractive.lib[ name ] || window[ name ];
 		if ( !dependency ) {
@@ -210,35 +210,11 @@
 		return dependency;
 	};
 
-	var helpers_loadSubComponents = function( get, resolvePath, makeComponent ) {
+	var utils_makeComponent = function( get, resolvePath, warn, parseComponentDefinition, ractiveRequire ) {
 
-		return function loadSubComponents( imports, baseUrl ) {
-			return new Ractive.Promise( function( resolve, reject ) {
-				var remaining = imports.length,
-					result = {};
-				imports.forEach( function( toImport ) {
-					var resolvedPath;
-					resolvedPath = resolvePath( toImport.href, baseUrl );
-					get( resolvedPath ).then( function( template ) {
-						return makeComponent( template, resolvedPath );
-					} ).then( function( Component ) {
-						result[ toImport.name ] = Component;
-						if ( !--remaining ) {
-							resolve( result );
-						}
-					}, reject );
-				} );
-				if ( !remaining ) {
-					resolve( result );
-				}
-			} );
-		};
-	}( utils_get, utils_resolvePath, helpers_makeComponent );
-
-	var helpers_makeComponent = function( warn, parseComponentDefinition, ractiveRequire, loadSubComponents ) {
-
-		var noConflict = {}, head = document.getElementsByTagName( 'head' )[ 0 ];
-		return function makeComponent( source, baseUrl ) {
+		var noConflict = {}, head = document.getElementsByTagName( 'head' )[ 0 ],
+			makeComponent;
+		makeComponent = function( source, baseUrl ) {
 			var definition;
 			definition = parseComponentDefinition( source );
 			return loadSubComponents( definition.imports, baseUrl ).then( function( subComponents ) {
@@ -285,7 +261,30 @@
 				return Component;
 			} );
 		};
-	}( utils_warn, helpers_parseComponentDefinition, helpers_ractiveRequire, helpers_loadSubComponents );
+		return makeComponent;
+
+		function loadSubComponents( imports, baseUrl ) {
+			return new Ractive.Promise( function( resolve, reject ) {
+				var remaining = imports.length,
+					result = {};
+				imports.forEach( function( toImport ) {
+					var resolvedPath;
+					resolvedPath = resolvePath( toImport.href, baseUrl );
+					get( resolvedPath ).then( function( template ) {
+						return makeComponent( template, resolvedPath );
+					} ).then( function( Component ) {
+						result[ toImport.name ] = Component;
+						if ( !--remaining ) {
+							resolve( result );
+						}
+					}, reject );
+				} );
+				if ( !remaining ) {
+					resolve( result );
+				}
+			} );
+		}
+	}( utils_get, utils_resolvePath, utils_warn, utils_parseComponentDefinition, utils_ractiveRequire );
 
 	var load_single = function( resolvePath, get, makeComponent ) {
 
@@ -306,7 +305,7 @@
 			}
 			return promises[ url ];
 		};
-	}( utils_resolvePath, utils_get, helpers_makeComponent );
+	}( utils_resolvePath, utils_get, utils_makeComponent );
 
 	var load_fromLinks = function( toArray, getNameFromLink, loadSingle ) {
 

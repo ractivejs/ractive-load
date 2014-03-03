@@ -1,7 +1,7 @@
 define([
 	'utils/resolvePath',
 	'utils/get',
-	'helpers/makeComponent'
+	'utils/makeComponent'
 ], function (
 	resolvePath,
 	get,
