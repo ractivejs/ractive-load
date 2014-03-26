@@ -8,7 +8,7 @@
   "description": "Component loader plugin for Ractive.js",
   "jam": {
     "dependencies": {
-      "Ractive": ">= 0.4.0"
+      "ractive": ">= 0.4.0"
     }
   },
   "devDependencies": {
