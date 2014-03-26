@@ -61,8 +61,6 @@ define([
 							options[ prop ] = exports[ prop ];
 						}
 					}
-
-					Component = Ractive.extend( options );
 				}
 
 				// tidy up after ourselves
@@ -73,12 +71,9 @@ define([
 				window.require = noConflict.require;
 			}
 
-			else {
-				Component = Ractive.extend({
-					template: definition.template,
-					css: definition.css,
-					components: subComponents
-				});
+			// no script tag, or component wasn't exported
+			if ( !Component ) {
+				Component = Ractive.extend( options );
 			}
 
 			return Component;

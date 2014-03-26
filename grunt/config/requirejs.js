@@ -1,7 +1,7 @@
 module.exports = {
 	compile: {
 		options: {
-			out: 'tmp/Ractive.load.js',
+			out: 'tmp/ractive-load.js',
 			baseUrl: 'src/',
 			name: 'load',
 			optimize: 'none',

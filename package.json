@@ -1,10 +1,10 @@
 {
-  "name": "ractive.load",
+  "name": "ractive-load",
   "version": "0.1.1",
   "author": {
     "name": "Rich Harris"
   },
-  "main": "Ractive.load.js",
+  "main": "ractive-load.js",
   "description": "Component loader plugin for Ractive.js",
   "jam": {
     "dependencies": {

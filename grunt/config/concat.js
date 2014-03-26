@@ -1,8 +1,8 @@
 module.exports = function ( grunt ) {
 	return {
 		bundle: {
-			src: 'tmp/Ractive.load.js',
-			dest: 'Ractive.load.js'
+			src: 'tmp/ractive-load.js',
+			dest: 'ractive-load.js'
 		},
 		options: {
 			process: true,

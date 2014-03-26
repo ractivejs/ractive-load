@@ -1,6 +1,6 @@
 /*
 
-	Ractive.load - v0.1.1 - 2014-03-02
+	Ractive.load - v0.1.1 - 2014-03-26
 	===================================================================
 
 	Next-generation DOM manipulation - http://ractivejs.org
@@ -245,18 +245,14 @@
 								options[ prop ] = exports[ prop ];
 							}
 						}
-						Component = Ractive.extend( options );
 					}
 					head.removeChild( scriptElement );
 					window.component = noConflict.component;
 					window.Ractive = noConflict.Ractive;
 					window.require = noConflict.require;
-				} else {
-					Component = Ractive.extend( {
-						template: definition.template,
-						css: definition.css,
-						components: subComponents
-					} );
+				}
+				if ( !Component ) {
+					Component = Ractive.extend( options );
 				}
 				return Component;
 			} );

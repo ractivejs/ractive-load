@@ -1,5 +1,5 @@
 module.exports = {
-	files: 'Ractive.load.js',
+	files: 'ractive-load.js',
 	options: {
 		js: {
 			indentWithTabs: true,

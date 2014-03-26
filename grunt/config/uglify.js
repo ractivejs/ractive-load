@@ -1,6 +1,6 @@
 module.exports = {
 	bundle: {
-		src: 'Ractive.load.js',
-		dest: 'Ractive.load.min.js'
+		src: 'ractive-load.js',
+		dest: 'ractive-load.min.js'
 	}
 };

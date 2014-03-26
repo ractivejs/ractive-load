@@ -1,14 +1,14 @@
 {
-	"name": "ractive.load",
-	"repo": "https://github.com/RactiveJS/Ractive.load",
-	"description": "Ractive.load",
+	"name": "ractive-load",
+	"repo": "https://github.com/ractivejs/ractive-load",
+	"description": "Component loader plugin for Ractive.js",
 	"version": "0.1.0",
 	"keywords": [],
 	"dependencies": {},
 	"development": {},
 	"license": "MIT",
-	"main": "Ractive.load.js",
+	"main": "ractive-load.js",
 	"scripts": [
-		"Ractive.load.js"
+		"ractive-load.js"
 	]
 }
