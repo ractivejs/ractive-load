@@ -12,7 +12,7 @@ define([
 
 	'use strict';
 
-	rcu.init( window.Ractive );
+	rcu.init( Ractive );
 
 	return function load ( url ) {
 		if ( !url ) {

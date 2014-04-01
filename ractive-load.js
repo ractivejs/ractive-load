@@ -401,7 +401,7 @@
 
 	var load = function( rcu, loadFromLinks, loadSingle, loadMultiple ) {
 
-		rcu.init( window.Ractive );
+		rcu.init( Ractive );
 		return function load( url ) {
 			if ( !url ) {
 				return loadFromLinks();
