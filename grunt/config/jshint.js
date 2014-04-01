@@ -6,6 +6,7 @@ module.exports = {
 		undef: true,
 		smarttabs: true,
 		boss: true,
+		evil: true,
 		globals: {
 			define: true,
 			module: true,
@@ -13,7 +14,8 @@ module.exports = {
 			window: true,
 			document: true,
 			XMLHttpRequest: true,
-			Ractive: true
+			Ractive: true,
+			setTimeout: true
 		}
 	}
 };

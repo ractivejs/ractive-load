@@ -15,7 +15,7 @@ define([
 	//       var foo = new components.foo(...);
 	//       var bar = new components.bar(...);
 	//     });
-	return function loadMultiple ( map, callback, onerror ) {
+	return function loadMultiple ( map ) {
 		var promise = new Ractive.Promise( function ( resolve, reject ) {
 			var pending = 0, result = {}, name, load;
 
@@ -38,10 +38,6 @@ define([
 				}
 			}
 		});
-
-		if ( callback ) {
-			promise.then( callback, onerror );
-		}
 
 		return promise;
 	};

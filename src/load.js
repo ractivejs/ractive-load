@@ -1,8 +1,10 @@
 define([
+	'rcu.amd',
 	'load/fromLinks',
 	'load/single',
 	'load/multiple'
 ], function (
+	rcu,
 	loadFromLinks,
 	loadSingle,
 	loadMultiple
@@ -10,17 +12,18 @@ define([
 
 	'use strict';
 
-	return function load ( url, callback, onError ) {
-		if ( !url || typeof url === 'function' ) {
-			callback = url;
-			return loadFromLinks( callback, onError );
+	rcu.init( window.Ractive );
+
+	return function load ( url ) {
+		if ( !url ) {
+			return loadFromLinks();
 		}
 
 		if ( typeof url === 'object' ) {
-			return loadMultiple( url, callback, onError );
+			return loadMultiple( url );
 		}
 
-		return loadSingle( url, callback, onError );
+		return loadSingle( url );
 	};
 
 });

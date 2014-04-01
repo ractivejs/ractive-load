@@ -75,6 +75,8 @@
 				},
 				lazy: true // only update when inputs blur
 			});
+		}).catch( function ( err ) {
+			console.error( err.message || err );
 		});
 	</script>
 

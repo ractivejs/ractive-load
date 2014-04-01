@@ -1,10 +1,8 @@
 define([
-	'utils/toArray',
-	'utils/getNameFromLink',
+	'rcu.amd',
 	'load/single'
 ], function (
-	toArray,
-	getNameFromLink,
+	rcu,
 	loadSingle
 ) {
 
@@ -21,7 +19,7 @@ define([
 	//     Ractive.load().then( function () {
 	//       var foo = new Ractive.components.foo(...);
 	//     });
-	return function loadFromLinks ( callback, onerror ) {
+	return function loadFromLinks () {
 		var promise = new Ractive.Promise( function ( resolve, reject ) {
 			var links, pending;
 
@@ -41,11 +39,21 @@ define([
 			});
 		});
 
-		if ( callback ) {
-			promise.then( callback, onerror );
-		}
-
 		return promise;
 	};
+
+	function getNameFromLink ( link ) {
+		return link.getAttribute( 'name' ) || rcu.getName( link.getAttribute( 'href' ) );
+	}
+
+	function toArray ( arrayLike ) {
+		var arr = [], i = arrayLike.length;
+
+		while ( i-- ) {
+			arr[i] = arrayLike[i];
+		}
+
+		return arr;
+	}
 
 });

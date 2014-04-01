@@ -1,42 +1,62 @@
 define([
-	'utils/resolvePath',
-	'utils/get',
-	'utils/makeComponent'
+	'rcu.amd',
+	'utils/get'
 ], function (
-	resolvePath,
-	get,
-	makeComponent
+	rcu,
+	get
 ) {
 
 	'use strict';
 
 	var promises = {};
 
+	return loadSingle;
+
 	// Load a single component:
 	//
 	//     Ractive.load( 'path/to/foo' ).then( function ( Foo ) {
 	//       var foo = new Foo(...);
 	//     });
-	return function loadSingle ( path, callback, onerror ) {
+	function loadSingle ( path ) {
 		var promise, url;
 
-		url = resolvePath( path, Ractive.baseUrl, true );
+		url = rcu.resolve( path, Ractive.baseUrl );
 
+		// if this component has already been requested, don't
+		// request it again
 		if ( !promises[ url ] ) {
 			promise = get( url ).then( function ( template ) {
-				return makeComponent( template, url );
-			}, function ( err ) {
-				throw err;
+				return new Ractive.Promise( function ( fulfil, reject ) {
+					rcu.make( template, {
+						baseUrl: url,
+						loadImport: loadImport,
+						require: ractiveRequire,
+						onerror: reject
+					}, fulfil );
+				});
 			});
-
-			if ( callback ) {
-				promise.then( callback, onerror );
-			}
 
 			promises[ url ] = promise;
 		}
 
 		return promises[ url ];
-	};
+	}
+
+	function loadImport ( name, path, callback ) {
+		loadSingle( path ).then( callback );
+	}
+
+	function ractiveRequire ( name ) {
+		var dependency, qualified;
+
+		dependency = Ractive.lib[ name ] || window[ name ];
+
+		if ( !dependency ) {
+			qualified = !/^[$_a-zA-Z][$_a-zA-Z0-9]*$/.test( name ) ? '["' + name + '"]' : '.' + name;
+			throw new Error( 'Ractive.load() error: Could not find dependency "' + name + '". It should be exposed as Ractive.lib' + qualified + ' or window' + qualified );
+		}
+
+		return dependency;
+	}
 
 });
