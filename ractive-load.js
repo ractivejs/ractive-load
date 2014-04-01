@@ -1,6 +1,6 @@
 /*
 
-	ractive-load - v0.1.1 - 2014-04-01
+	ractive-load - v0.1.2 - 2014-04-01
 	===================================================================
 
 	Next-generation DOM manipulation - http://ractivejs.org
