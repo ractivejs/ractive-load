@@ -1,8 +1,11 @@
 {
 	"name": "ractive-load",
-	"version": "0.1.0",
+	"version": "0.1.2",
 	"author": "Rich Harris",
 	"main": "ractive-load.js",
+	"dependencies": {
+		"ractive": "~0.4.0"
+	},
 	"ignore": [
 		"**/.*",
 		"src",

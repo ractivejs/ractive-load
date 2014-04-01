@@ -2,9 +2,11 @@
 	"name": "ractive-load",
 	"repo": "https://github.com/ractivejs/ractive-load",
 	"description": "Component loader plugin for Ractive.js",
-	"version": "0.1.0",
+	"version": "0.1.2",
 	"keywords": [],
-	"dependencies": {},
+	"dependencies": {
+		"ractivejs/ractive": "~0.4.0"
+	},
 	"development": {},
 	"license": "MIT",
 	"main": "ractive-load.js",
