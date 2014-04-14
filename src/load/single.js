@@ -17,10 +17,10 @@ define([
 	//     Ractive.load( 'path/to/foo' ).then( function ( Foo ) {
 	//       var foo = new Foo(...);
 	//     });
-	function loadSingle ( path ) {
+	function loadSingle ( path, baseUrl ) {
 		var promise, url;
 
-		url = rcu.resolve( path, Ractive.baseUrl );
+		url = rcu.resolve( path, baseUrl );
 
 		// if this component has already been requested, don't
 		// request it again
@@ -28,7 +28,7 @@ define([
 			promise = get( url ).then( function ( template ) {
 				return new Ractive.Promise( function ( fulfil, reject ) {
 					rcu.make( template, {
-						baseUrl: url,
+						url: url,
 						loadImport: loadImport,
 						require: ractiveRequire,
 						onerror: reject
@@ -42,8 +42,8 @@ define([
 		return promises[ url ];
 	}
 
-	function loadImport ( name, path, callback ) {
-		loadSingle( path ).then( callback );
+	function loadImport ( name, path, baseUrl, callback ) {
+		loadSingle( path, baseUrl ).then( callback );
 	}
 
 	function ractiveRequire ( name ) {

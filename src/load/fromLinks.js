@@ -19,7 +19,7 @@ define([
 	//     Ractive.load().then( function () {
 	//       var foo = new Ractive.components.foo(...);
 	//     });
-	return function loadFromLinks () {
+	return function loadFromLinks ( baseUrl ) {
 		var promise = new Ractive.Promise( function ( resolve, reject ) {
 			var links, pending;
 
@@ -29,7 +29,7 @@ define([
 			links.forEach( function ( link ) {
 				var name = getNameFromLink( link );
 
-				loadSingle( link.getAttribute( 'href' ) ).then( function ( Component ) {
+				loadSingle( link.getAttribute( 'href' ), baseUrl ).then( function ( Component ) {
 					Ractive.components[ name ] = Component;
 
 					if ( !--pending ) {

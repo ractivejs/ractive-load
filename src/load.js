@@ -14,16 +14,22 @@ define([
 
 	rcu.init( Ractive );
 
-	return function load ( url ) {
+	var load = function load ( url ) {
+		var baseUrl = load.baseUrl;
+
 		if ( !url ) {
-			return loadFromLinks();
+			return loadFromLinks( baseUrl );
 		}
 
 		if ( typeof url === 'object' ) {
-			return loadMultiple( url );
+			return loadMultiple( url, baseUrl );
 		}
 
-		return loadSingle( url );
+		return loadSingle( url, baseUrl );
 	};
+
+	load.baseUrl = '';
+
+	return load;
 
 });

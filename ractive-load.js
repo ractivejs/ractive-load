@@ -1,6 +1,6 @@
 /*
 
-	ractive-load - v0.1.2 - 2014-04-01
+	ractive-load - v0.1.2 - 2014-04-14
 	===================================================================
 
 	Next-generation DOM manipulation - http://ractivejs.org
@@ -60,7 +60,7 @@
 
 	/*
 
-	rcu (Ractive component utils) - 0.1.0 - 2014-04-01
+	rcu (Ractive component utils) - 0.1.0 - 2014-04-14
 	==============================================================
 
 	Copyright 2014 Rich Harris and contributors
@@ -157,28 +157,11 @@
 				return item.f;
 			}
 		}( getName );
-		var resolve = function resolvePath( relativePath, base ) {
-			var pathParts, relativePathParts, part;
-			if ( relativePath.charAt( 0 ) !== '.' ) {
-				return relativePath;
-			}
-			pathParts = ( base || '' ).split( '/' );
-			relativePathParts = relativePath.split( '/' );
-			pathParts.pop();
-			while ( part = relativePathParts.shift() ) {
-				if ( part === '..' ) {
-					pathParts.pop();
-				} else if ( part !== '.' ) {
-					pathParts.push( part );
-				}
-			}
-			return pathParts.join( '/' );
-		};
-		var make = function( resolve, parse ) {
+		var make = function( parse ) {
 			return function makeComponent( source, config, callback ) {
-				var definition, baseUrl, make, loadImport, imports, loadModule, modules, remainingDependencies, onloaded, onerror, errorMessage, ready;
+				var definition, url, make, loadImport, imports, loadModule, modules, remainingDependencies, onloaded, onerror, errorMessage, ready;
 				config = config || {};
-				baseUrl = config.baseUrl || '';
+				url = config.url || '';
 				loadImport = config.loadImport;
 				loadModule = config.loadModule;
 				onerror = config.onerror;
@@ -240,11 +223,8 @@
 						}
 						imports = {};
 						definition.imports.forEach( function( toImport ) {
-							var name, path;
-							name = toImport.name;
-							path = resolve( baseUrl, toImport.href );
-							loadImport( name, path, function( Component ) {
-								imports[ name ] = Component;
+							loadImport( toImport.name, toImport.href, url, function( Component ) {
+								imports[ toImport.name ] = Component;
 								onloaded();
 							} );
 						} );
@@ -252,8 +232,7 @@
 					if ( loadModule && definition.modules.length ) {
 						modules = {};
 						definition.modules.forEach( function( name ) {
-							var path = resolve( name, baseUrl );
-							loadModule( name, path, function( Component ) {
+							loadModule( name, name, url, function( Component ) {
 								modules[ name ] = Component;
 								onloaded();
 							} );
@@ -264,7 +243,24 @@
 				}
 				ready = true;
 			};
-		}( resolve, parse );
+		}( parse );
+		var resolve = function resolvePath( relativePath, base ) {
+			var pathParts, relativePathParts, part;
+			if ( relativePath.charAt( 0 ) !== '.' ) {
+				return relativePath;
+			}
+			pathParts = ( base || '' ).split( '/' );
+			relativePathParts = relativePath.split( '/' );
+			pathParts.pop();
+			while ( part = relativePathParts.shift() ) {
+				if ( part === '..' ) {
+					pathParts.pop();
+				} else if ( part !== '.' ) {
+					pathParts.push( part );
+				}
+			}
+			return pathParts.join( '/' );
+		};
 		var rcu = function( parse, make, resolve, getName ) {
 			return {
 				init: function( copy ) {
@@ -305,14 +301,14 @@
 		var promises = {};
 		return loadSingle;
 
-		function loadSingle( path ) {
+		function loadSingle( path, baseUrl ) {
 			var promise, url;
-			url = rcu.resolve( path, Ractive.baseUrl );
+			url = rcu.resolve( path, baseUrl );
 			if ( !promises[ url ] ) {
 				promise = get( url ).then( function( template ) {
 					return new Ractive.Promise( function( fulfil, reject ) {
 						rcu.make( template, {
-							baseUrl: url,
+							url: url,
 							loadImport: loadImport,
 							require: ractiveRequire,
 							onerror: reject
@@ -324,8 +320,8 @@
 			return promises[ url ];
 		}
 
-		function loadImport( name, path, callback ) {
-			loadSingle( path ).then( callback );
+		function loadImport( name, path, baseUrl, callback ) {
+			loadSingle( path, baseUrl ).then( callback );
 		}
 
 		function ractiveRequire( name ) {
@@ -341,14 +337,14 @@
 
 	var load_fromLinks = function( rcu, loadSingle ) {
 
-		return function loadFromLinks() {
+		return function loadFromLinks( baseUrl ) {
 			var promise = new Ractive.Promise( function( resolve, reject ) {
 				var links, pending;
 				links = toArray( document.querySelectorAll( 'link[rel="ractive"]' ) );
 				pending = links.length;
 				links.forEach( function( link ) {
 					var name = getNameFromLink( link );
-					loadSingle( link.getAttribute( 'href' ) ).then( function( Component ) {
+					loadSingle( link.getAttribute( 'href' ), baseUrl ).then( function( Component ) {
 						Ractive.components[ name ] = Component;
 						if ( !--pending ) {
 							resolve();
@@ -375,13 +371,13 @@
 
 	var load_multiple = function( loadSingle ) {
 
-		return function loadMultiple( map ) {
+		return function loadMultiple( map, baseUrl ) {
 			var promise = new Ractive.Promise( function( resolve, reject ) {
 				var pending = 0,
 					result = {}, name, load;
 				load = function( name ) {
 					var url = map[ name ];
-					loadSingle( url ).then( function( Component ) {
+					loadSingle( url, baseUrl ).then( function( Component ) {
 						result[ name ] = Component;
 						if ( !--pending ) {
 							resolve( result );
@@ -402,15 +398,18 @@
 	var load = function( rcu, loadFromLinks, loadSingle, loadMultiple ) {
 
 		rcu.init( Ractive );
-		return function load( url ) {
+		var load = function load( url ) {
+			var baseUrl = load.baseUrl;
 			if ( !url ) {
-				return loadFromLinks();
+				return loadFromLinks( baseUrl );
 			}
 			if ( typeof url === 'object' ) {
-				return loadMultiple( url );
+				return loadMultiple( url, baseUrl );
 			}
-			return loadSingle( url );
+			return loadSingle( url, baseUrl );
 		};
+		load.baseUrl = '';
+		return load;
 	}( rcuamd, load_fromLinks, load_single, load_multiple );
 
 

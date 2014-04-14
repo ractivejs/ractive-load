@@ -15,14 +15,14 @@ define([
 	//       var foo = new components.foo(...);
 	//       var bar = new components.bar(...);
 	//     });
-	return function loadMultiple ( map ) {
+	return function loadMultiple ( map, baseUrl ) {
 		var promise = new Ractive.Promise( function ( resolve, reject ) {
 			var pending = 0, result = {}, name, load;
 
 			load = function ( name ) {
 				var url = map[ name ];
 
-				loadSingle( url ).then( function ( Component ) {
+				loadSingle( url, baseUrl ).then( function ( Component ) {
 					result[ name ] = Component;
 
 					if ( !--pending ) {
