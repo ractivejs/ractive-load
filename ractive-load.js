@@ -1,6 +1,6 @@
 /*
 
-	ractive-load - v0.1.3 - 2014-04-14
+	ractive-load - v0.1.3 - 2014-04-17
 	===================================================================
 
 	Next-generation DOM manipulation - http://ractivejs.org
@@ -60,7 +60,7 @@
 
 	/*
 
-	rcu (Ractive component utils) - 0.1.0 - 2014-04-14
+	rcu (Ractive component utils) - 0.1.1 - 2014-04-17
 	==============================================================
 
 	Copyright 2014 Rich Harris and contributors
@@ -175,7 +175,7 @@
 					};
 					if ( definition.script ) {
 						try {
-							fn = new Function( 'component', 'require', 'Ractive', definition.script );
+							fn = new Function( 'component', 'require', 'Ractive', definition.script + '\n//# sourceURL=' + url.substr( url.lastIndexOf( '/' ) + 1 ) );
 						} catch ( err ) {
 							errorMessage = 'Error creating function from component script: ' + err.message || err;
 							if ( onerror ) {
