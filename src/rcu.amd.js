@@ -127,6 +127,11 @@ define( function() {
 					components: imports
 				};
 				if ( definition.script ) {
+					
+					if( Ractive.defaults.debug ) {
+						definition.script += '\n//# sourceURL=' + url;
+					}
+
 					try {
 						fn = new Function( 'component', 'require', 'Ractive', definition.script );
 					} catch ( err ) {
