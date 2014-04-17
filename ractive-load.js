@@ -175,7 +175,7 @@
 					};
 					if ( definition.script ) {
 						if ( Ractive.defaults.debug ) {
-							definition.script += '\n//# sourceURL=' + url;
+							definition.script += '\n//# sourceURL=' + url.replace( '.html', '.js' );
 						}
 						try {
 							fn = new Function( 'component', 'require', 'Ractive', definition.script );
