@@ -7,9 +7,18 @@
 		"ractive": "~0.4.0"
 	},
 	"ignore": [
-		"**/.*",
-		"src",
-		"test",
-		"Gruntfile.js"
+		".git/",
+		".*",
+		"demo/",
+		"grunt/",
+		"lib/",
+		"scripts/",
+		"src/",
+		"test/",
+		".gitignore",
+		"*.json",
+		"Gruntfile.js",
+		"index.html",
+		"README.md"
 	]
 }
