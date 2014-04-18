@@ -128,7 +128,7 @@ define( function() {
 				};
 				if ( definition.script ) {
 					try {
-						fn = new Function( 'component', 'require', 'Ractive', definition.script + '\n//# sourceURL=' + url.substr( url.lastIndexOf( '/' ) + 1 ).replace('.html','.js') );
+						fn = new Function( 'component', 'require', 'Ractive', definition.script + '\n//# sourceURL=' + url.substr( url.lastIndexOf( '/' ) + 1 ).replace('.html','') );
 					} catch ( err ) {
 						errorMessage = 'Error creating function from component script: ' + err.message || err;
 						if ( onerror ) {
