@@ -17,6 +17,7 @@
 		"src/",
 		"test/",
 		"wrapper/",
+		"vendor/",
 		"Gruntfile.js",
 		"index.html",
 		"README.md"
