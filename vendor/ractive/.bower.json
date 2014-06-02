@@ -1,0 +1,19 @@
+{
+  "name": "ractive",
+  "version": "0.4.0",
+  "main": "ractive.js",
+  "ignore": [
+    ".*",
+    "bower.json"
+  ],
+  "homepage": "https://github.com/ractivejs/ractive",
+  "_release": "0.4.0",
+  "_resolution": {
+    "type": "version",
+    "tag": "v0.4.0",
+    "commit": "18734ec4403d6cad56bbf2ba89a639d958fd9275"
+  },
+  "_source": "git://github.com/ractivejs/ractive.git",
+  "_target": "~0.4.0",
+  "_originalSource": "ractive"
+}

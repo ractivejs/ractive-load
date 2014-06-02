@@ -6,6 +6,9 @@ module.exports = {
 			name: 'load',
 			optimize: 'none',
 			logLevel: 2,
+			paths: {
+				rcu: '../node_modules/rcu/rcu.amd'
+			},
 			onBuildWrite: function( name, path, contents ) {
 				return require( 'amdclean' ).clean({
 					code: contents

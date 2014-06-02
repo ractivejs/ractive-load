@@ -18,6 +18,7 @@
     "grunt-contrib-copy": "~0.4.1",
     "grunt-contrib-requirejs": "~0.4.1",
     "amdclean": "~1.2.1",
-    "grunt-jsbeautifier": "~0.2.6"
+    "grunt-jsbeautifier": "~0.2.6",
+    "rcu": "~0.1.5"
   }
 }

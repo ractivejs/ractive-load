@@ -9,14 +9,14 @@
 	"ignore": [
 		".git/",
 		".*",
+		"*.json",
 		"demo/",
 		"grunt/",
 		"lib/",
 		"scripts/",
 		"src/",
 		"test/",
-		".gitignore",
-		"*.json",
+		"wrapper/",
 		"Gruntfile.js",
 		"index.html",
 		"README.md"

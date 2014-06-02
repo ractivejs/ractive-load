@@ -1,5 +1,5 @@
 define([
-	'rcu.amd',
+	'rcu',
 	'load/fromLinks',
 	'load/single',
 	'load/multiple'

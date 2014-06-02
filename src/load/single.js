@@ -1,5 +1,5 @@
 define([
-	'rcu.amd',
+	'rcu',
 	'utils/get'
 ], function (
 	rcu,
