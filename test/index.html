@@ -1,19 +1,20 @@
-<!DOCTYPE HTML>
 <html>
 <head>
-	<title>Ractive.load test suite</title>
-	<link rel='stylesheet' href='lib/qunit.css'>
+	<meta charset="utf-8">
+	<title>ractive-load tests</title>
+	<link rel="stylesheet" href="vendor/mocha/mocha.css" />
 </head>
 <body>
-	<div id='qunit'></div>
-	<div id='qunit-fixture'></div>
+	<div id="mocha"></div>
 
-	<script src='lib/qunit.js'></script>
-	<script src='lib/qunit-assert-html.js'></script>
-	<script src='../vendor/ractive/ractive-legacy.js'></script>
-	<script src='../tmp/Ractive.load.js'></script>
-
-	<!-- load test modules -->
-	<script src='tests.js'></script>
+	<script src="../eval2.js"></script>
+	<script src="vendor/mocha/mocha.js"></script>
+	<script src="vendor/chai/chai.js"></script>
+	<script>mocha.setup('bdd')</script>
+	<script src="tests.js"></script>
+	<script>
+		mocha.checkLeaks();
+		mocha.run();
+	</script>
 </body>
 </html>
