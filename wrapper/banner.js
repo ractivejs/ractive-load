@@ -37,14 +37,14 @@
 
 	'use strict';
 
-	// Common JS (i.e. browserify) environment
-	if ( typeof module !== 'undefined' && module.exports && typeof require === 'function' ) {
-		factory( require( 'Ractive' ) );
+	// AMD environment
+	if ( typeof define === 'function' && define.amd ) {
+		define([ 'ractive' ], factory );
 	}
 
-	// AMD?
-	else if ( typeof define === 'function' && define.amd ) {
-		define([ 'Ractive' ], factory );
+	// Common JS (i.e. node/browserify)
+	else if ( typeof module !== 'undefined' && module.exports && typeof require === 'function' ) {
+		module.exports = factory( require( 'ractive' ), require( 'fs' ), require( 'path' ) );
 	}
 
 	// browser global
@@ -56,7 +56,7 @@
 		throw new Error( 'Could not find Ractive! It must be loaded before the Ractive.load plugin' );
 	}
 
-}( typeof window !== 'undefined' ? window : this, function ( Ractive ) {
+}( typeof window !== 'undefined' ? window : this, function ( Ractive, fs, path ) {
 
 	'use strict';
 
