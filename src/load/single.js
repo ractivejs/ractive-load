@@ -17,10 +17,10 @@ define([
 	//     Ractive.load( 'path/to/foo' ).then( function ( Foo ) {
 	//       var foo = new Foo(...);
 	//     });
-	function loadSingle ( path, baseUrl ) {
+	function loadSingle ( path, parentUrl, baseUrl ) {
 		var promise, url;
 
-		url = rcu.resolve( path, baseUrl );
+		url = rcu.resolve( path, path[0] === '.' ? parentUrl : baseUrl );
 
 		// if this component has already been requested, don't
 		// request it again
@@ -29,10 +29,14 @@ define([
 				return new Ractive.Promise( function ( fulfil, reject ) {
 					rcu.make( template, {
 						url: url,
-						loadImport: loadImport,
-						require: ractiveRequire,
-						onerror: reject
-					}, fulfil );
+						loadImport: function ( name, path, parentUrl, callback ) {
+							// if import has a relative URL, it should resolve
+							// relative to this (parent). Otherwise, relative
+							// to load.baseUrl
+							loadSingle( path, parentUrl, baseUrl ).then( callback, reject );
+						},
+						require: ractiveRequire
+					}, fulfil, reject );
 				});
 			});
 
@@ -42,17 +46,13 @@ define([
 		return promises[ url ];
 	}
 
-	function loadImport ( name, path, baseUrl, callback ) {
-		loadSingle( path, baseUrl ).then( callback );
-	}
-
 	function ractiveRequire ( name ) {
 		var dependency, qualified;
 
 		dependency = Ractive.lib[ name ] || window[ name ];
 
-		if(!dependency && typeof require === 'function'){
-			dependency = require(name);
+		if ( !dependency && typeof require === 'function' ) {
+			dependency = require( name );
 		}
 
 		if ( !dependency ) {

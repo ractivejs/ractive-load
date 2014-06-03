@@ -20,9 +20,9 @@ define([
 			var pending = 0, result = {}, name, load;
 
 			load = function ( name ) {
-				var url = map[ name ];
+				var path = map[ name ];
 
-				loadSingle( url, baseUrl ).then( function ( Component ) {
+				loadSingle( path, baseUrl, baseUrl ).then( function ( Component ) {
 					result[ name ] = Component;
 
 					if ( !--pending ) {

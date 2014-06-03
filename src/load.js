@@ -25,7 +25,7 @@ define([
 			return loadMultiple( url, baseUrl );
 		}
 
-		return loadSingle( url, baseUrl );
+		return loadSingle( url, baseUrl, baseUrl );
 	};
 
 	load.baseUrl = '';
