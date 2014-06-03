@@ -11,7 +11,7 @@ define([
 	'use strict';
 
 	var promises = {},
-		global = ( typeof window !== 'undefined' ? window : ( typeof global !== 'undefined' ? global : {} ) );
+		global = ( typeof window !== 'undefined' ? window : {} );
 
 	return loadSingle;
 
