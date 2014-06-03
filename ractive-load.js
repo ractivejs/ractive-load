@@ -1,6 +1,6 @@
 /*
 
-	ractive-load - v0.1.3 - 2014-06-02
+	ractive-load - v0.1.3 - 2014-06-03
 	===================================================================
 
 	Next-generation DOM manipulation - http://ractivejs.org
@@ -37,14 +37,14 @@
 
 	'use strict';
 
-	// Common JS (i.e. browserify) environment
-	if ( typeof module !== 'undefined' && module.exports && typeof require === 'function' ) {
-		factory( require( 'Ractive' ) );
+	// AMD environment
+	if ( typeof define === 'function' && define.amd ) {
+		define( [ 'ractive' ], factory );
 	}
 
-	// AMD?
-	else if ( typeof define === 'function' && define.amd ) {
-		define( [ 'Ractive' ], factory );
+	// Common JS (i.e. node/browserify)
+	else if ( typeof module !== 'undefined' && module.exports && typeof require === 'function' ) {
+		module.exports = factory( require( 'ractive' ), require( 'fs' ), require( 'path' ) );
 	}
 
 	// browser global
@@ -54,20 +54,20 @@
 		throw new Error( 'Could not find Ractive! It must be loaded before the Ractive.load plugin' );
 	}
 
-}( typeof window !== 'undefined' ? window : this, function( Ractive ) {
+}( typeof window !== 'undefined' ? window : this, function( Ractive, fs, path ) {
 
 	'use strict';
 
 	/*
 
-	rcu (Ractive component utils) - 0.1.5 - 2014-06-01
+	rcu (Ractive component utils) - 0.1.8 - 2014-06-02
 	==============================================================
 
 	Copyright 2014 Rich Harris and contributors
 	Released under the MIT license.
 
 */
-	var rcu = function( module ) {
+	var rcu = function() {
 
 		var Ractive;
 		var getName = function getName( path ) {
@@ -108,6 +108,12 @@
 						}
 					}
 				}
+				while ( /^\s*$/.test( template[ 0 ] ) ) {
+					template.shift();
+				}
+				while ( /^\s*$/.test( template[ template.length - 1 ] ) ) {
+					template.pop();
+				}
 				imports = links.map( function( link ) {
 					var href, name;
 					href = link.a.href && link.a.href[ 0 ];
@@ -138,22 +144,14 @@
 			}
 		}( getName );
 		var eval2 = function() {
-			var _eval, isBrowser, isNode, _nodeRequire, _dir, head, Module, useFs, fs, path;
+			var _eval, isBrowser, isNode, head, Module;
 			_eval = eval;
 			if ( typeof document !== 'undefined' ) {
 				isBrowser = true;
 				head = document.getElementsByTagName( 'head' )[ 0 ];
 			} else if ( typeof process !== 'undefined' ) {
 				isNode = true;
-				if ( typeof module !== 'undefined' && typeof module._compile === 'function' ) {
-					Module = module.constructor;
-				} else {
-					useFs = true;
-					_nodeRequire = require.nodeRequire;
-					fs = _nodeRequire( 'fs' );
-					path = _nodeRequire( 'path' );
-					_dir = typeof __dirname !== 'undefined' ? __dirname : path.resolve( path.dirname( module.uri ) );
-				}
+				Module = ( require.nodeRequire || require )( 'module' );
 			}
 
 			function eval2( script, options ) {
@@ -199,43 +197,24 @@
 			}
 
 			function locateErrorUsingModule( code, url ) {
-				var m, x, wrapped, name, filepath;
-				if ( useFs ) {
-					wrapped = 'module.exports = function () {\n' + code + '\n};';
-					name = '__eval2_' + Math.floor( Math.random() * 100000 ) + '__';
-					filepath = path.join( _dir, name + '.js' );
-					fs.writeFileSync( filepath, wrapped );
-					try {
-						x = _nodeRequire( filepath );
-					} catch ( err ) {
-						console.error( err );
-						fs.unlinkSync( filepath, wrapped );
-						return;
-					}
-					fs.unlinkSync( filepath, wrapped );
-					x();
-				} else {
-					m = new Module();
-					try {
-						m._compile( 'module.exports = function () {\n' + code + '\n};', url );
-					} catch ( err ) {
-						console.error( err );
-						return;
-					}
-					x = m.x;
+				var m = new Module();
+				try {
+					m._compile( 'module.exports = function () {\n' + code + '\n};', url );
+				} catch ( err ) {
+					console.error( err );
+					return;
 				}
-				x();
+				m.exports();
 			}
 			return eval2;
 		}();
 		var make = function( parse, eval2 ) {
 			return function make( source, config, callback, errback ) {
-				var definition, url, createComponent, loadImport, imports, loadModule, modules, remainingDependencies, onloaded, onerror, ready;
+				var definition, url, createComponent, loadImport, imports, loadModule, modules, remainingDependencies, onloaded, ready;
 				config = config || {};
 				url = config.url || '';
 				loadImport = config.loadImport;
 				loadModule = config.loadModule;
-				onerror = config.onerror;
 				definition = parse( source );
 				createComponent = function() {
 					var options, Component, script, factory, component, exports, prop;
@@ -309,7 +288,7 @@
 		}( parse, eval2 );
 		var resolve = function resolvePath( relativePath, base ) {
 			var pathParts, relativePathParts, part;
-			if ( relativePath.charAt( 0 ) !== '.' ) {
+			if ( !base || relativePath.charAt( 0 ) === '/' ) {
 				return relativePath;
 			}
 			pathParts = ( base || '' ).split( '/' );
@@ -336,55 +315,70 @@
 			};
 		}( parse, make, resolve, getName );
 		return rcu;
-	}( {} );
+	}();
 
-	var utils_get = function get( url ) {
-		return new Ractive.Promise( function( resolve, reject ) {
-			var xhr, onload, loaded;
-			xhr = new XMLHttpRequest();
-			xhr.open( 'GET', url );
-			onload = function() {
-				if ( xhr.readyState !== 4 || loaded ) {
-					return;
-				}
-				resolve( xhr.responseText );
-				loaded = true;
+	var utils_get = function() {
+
+		var get;
+		if ( typeof XMLHttpRequest === 'function' ) {
+			get = function( url ) {
+				return new Ractive.Promise( function( fulfil, reject ) {
+					var xhr, onload, loaded;
+					xhr = new XMLHttpRequest();
+					xhr.open( 'GET', url );
+					onload = function() {
+						if ( xhr.readyState !== 4 || loaded ) {
+							return;
+						}
+						fulfil( xhr.responseText );
+						loaded = true;
+					};
+					xhr.onload = xhr.onreadystatechange = onload;
+					xhr.onerror = reject;
+					xhr.send();
+					if ( xhr.readyState === 4 ) {
+						onload();
+					}
+				} );
 			};
-			xhr.onload = xhr.onreadystatechange = onload;
-			xhr.onerror = reject;
-			xhr.send();
-			if ( xhr.readyState === 4 ) {
-				onload();
-			}
-		} );
-	};
+		} else {
+			get = function( url ) {
+				return new Ractive.Promise( function( fulfil, reject ) {
+					fs.readFile( url, function( err, result ) {
+						if ( err ) {
+							return reject( err );
+						}
+						fulfil( result.toString() );
+					} );
+				} );
+			};
+		}
+		return get;
+	}();
 
 	var load_single = function( rcu, get ) {
 
 		var promises = {};
 		return loadSingle;
 
-		function loadSingle( path, baseUrl ) {
+		function loadSingle( path, parentUrl, baseUrl ) {
 			var promise, url;
-			url = rcu.resolve( path, baseUrl );
+			url = rcu.resolve( path, path[ 0 ] === '.' ? parentUrl : baseUrl );
 			if ( !promises[ url ] ) {
 				promise = get( url ).then( function( template ) {
 					return new Ractive.Promise( function( fulfil, reject ) {
 						rcu.make( template, {
 							url: url,
-							loadImport: loadImport,
-							require: ractiveRequire,
-							onerror: reject
-						}, fulfil );
+							loadImport: function( name, path, parentUrl, callback ) {
+								loadSingle( path, parentUrl, baseUrl ).then( callback, reject );
+							},
+							require: ractiveRequire
+						}, fulfil, reject );
 					} );
 				} );
 				promises[ url ] = promise;
 			}
 			return promises[ url ];
-		}
-
-		function loadImport( name, path, baseUrl, callback ) {
-			loadSingle( path, baseUrl ).then( callback );
 		}
 
 		function ractiveRequire( name ) {
@@ -442,8 +436,8 @@
 				var pending = 0,
 					result = {}, name, load;
 				load = function( name ) {
-					var url = map[ name ];
-					loadSingle( url, baseUrl ).then( function( Component ) {
+					var path = map[ name ];
+					loadSingle( path, baseUrl, baseUrl ).then( function( Component ) {
 						result[ name ] = Component;
 						if ( !--pending ) {
 							resolve( result );
@@ -472,7 +466,7 @@
 			if ( typeof url === 'object' ) {
 				return loadMultiple( url, baseUrl );
 			}
-			return loadSingle( url, baseUrl );
+			return loadSingle( url, baseUrl, baseUrl );
 		};
 		load.baseUrl = '';
 		return load;
