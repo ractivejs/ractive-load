@@ -2,12 +2,14 @@ define([
 	'rcu',
 	'load/fromLinks',
 	'load/single',
-	'load/multiple'
+	'load/multiple',
+	'load/modules'
 ], function (
 	rcu,
 	loadFromLinks,
 	loadSingle,
-	loadMultiple
+	loadMultiple,
+	modules
 ) {
 
 	'use strict';
@@ -29,6 +31,7 @@ define([
 	};
 
 	load.baseUrl = '';
+	load.modules = modules;
 
 	return load;
 

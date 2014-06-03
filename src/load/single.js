@@ -1,14 +1,17 @@
 define([
 	'rcu',
-	'utils/get'
+	'utils/get',
+	'load/modules'
 ], function (
 	rcu,
-	get
+	get,
+	modules
 ) {
 
 	'use strict';
 
-	var promises = {};
+	var promises = {},
+		global = ( typeof window !== 'undefined' ? window : ( typeof global !== 'undefined' ? global : {} ) );
 
 	return loadSingle;
 
@@ -49,7 +52,8 @@ define([
 	function ractiveRequire ( name ) {
 		var dependency, qualified;
 
-		dependency = Ractive.lib[ name ] || window[ name ];
+		dependency = modules.hasOwnProperty( name ) ? modules[ name ] :
+		             global.hasOwnProperty( name ) ? global[ name ] : null;
 
 		if ( !dependency && typeof require === 'function' ) {
 			dependency = require( name );
