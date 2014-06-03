@@ -50,9 +50,36 @@ Ractive.load( 'foo.html' ).then( function ( FooComponent ) {
 *TODO loading multiple components*
 
 
+## Defining module dependencies
+
+Ideally, components should not care what environment they're being used in - an AMD app, node.js, or a standard browser environment without module loaders.
+
+So if a component has external dependencies, there's a standard way to use them. Suppose you have some app config that sits outside your component:
+
+```html
+<p>foo: {{config.foo}}</p>
+
+<script>
+  var config = require( 'config' );
+  component.exports = {
+    data: { config: config }
+  };
+</script>
+```
+
+Here, we're importing the app config with `require('config')`. If this component was being used in an AMD app, or if it was being transformed by browserify, it would defer to the AMD or browserify implementation of `require`.
+
+But outside of AMD, browserify and node, `require` doesn't mean anything. So, inside a component, ractive-load provides a specialised `require` function. Using our `config` example, `require` will first look for `Ractive.load.modules.config`, then for `window.config` (if we're in a browser), and then will fall back to using an existing `require` implementation (e.g. if we're in node.js).
+
+In other words, this is the easiest way to make `config` available to a component:
+
+```js
+Ractive.load.modules.config = myConfig;
+```
+
 ## Using ractive-load in node.js
 
-Many components will work in node.js environments without any changes. This allows you to render HTML from components in, for example, Express.js apps.
+Many components will work in node.js environments without any changes. This allows you to render HTML from components using the same templates and data as you use on the client.
 
 Install it in the usual way:
 
