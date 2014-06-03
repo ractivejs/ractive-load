@@ -1,6 +1,6 @@
 /*
 
-	ractive-load - v0.1.3 - 2014-06-03
+	ractive-load - v0.2.0 - 2014-06-03
 	===================================================================
 
 	Next-generation DOM manipulation - http://ractivejs.org
@@ -356,9 +356,11 @@
 		return get;
 	}();
 
-	var load_single = function( rcu, get ) {
+	var load_modules = {};
 
-		var promises = {};
+	var load_single = function( rcu, get, modules ) {
+
+		var promises = {}, global = typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : {};
 		return loadSingle;
 
 		function loadSingle( path, parentUrl, baseUrl ) {
@@ -383,7 +385,7 @@
 
 		function ractiveRequire( name ) {
 			var dependency, qualified;
-			dependency = Ractive.lib[ name ] || window[ name ];
+			dependency = modules.hasOwnProperty( name ) ? modules[ name ] : global.hasOwnProperty( name ) ? global[ name ] : null;
 			if ( !dependency && typeof require === 'function' ) {
 				dependency = require( name );
 			}
@@ -393,7 +395,7 @@
 			}
 			return dependency;
 		}
-	}( rcu, utils_get );
+	}( rcu, utils_get, load_modules );
 
 	var load_fromLinks = function( rcu, loadSingle ) {
 
@@ -455,7 +457,7 @@
 		};
 	}( load_single );
 
-	var load = function( rcu, loadFromLinks, loadSingle, loadMultiple ) {
+	var load = function( rcu, loadFromLinks, loadSingle, loadMultiple, modules ) {
 
 		rcu.init( Ractive );
 		var load = function load( url ) {
@@ -469,13 +471,22 @@
 			return loadSingle( url, baseUrl, baseUrl );
 		};
 		load.baseUrl = '';
+		load.modules = modules;
 		return load;
-	}( rcu, load_fromLinks, load_single, load_multiple );
+	}( rcu, load_fromLinks, load_single, load_multiple, load_modules );
 
 
-	Ractive.lib = Ractive.lib || {};
+	// Ractive.lib is deprecated. Remove this in a few versions' time
+	try {
+		Object.defineProperty( Ractive, 'lib', {
+			get: function() {
+				console && console.warn && console.warn( '`Ractive.lib` has been deprecated. Use `Ractive.load.modules` as a module registry instead' );
+				return load.modules;
+			}
+		} );
+	} catch ( err ) {}
+
 	Ractive.load = load;
-
 	return load;
 
 } ) );
