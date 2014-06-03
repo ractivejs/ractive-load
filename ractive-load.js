@@ -1,6 +1,6 @@
 /*
 
-	ractive-load - v0.2.0 - 2014-06-03
+	ractive-load - v0.2.1 - 2014-06-03
 	===================================================================
 
 	Next-generation DOM manipulation - http://ractivejs.org
@@ -360,7 +360,7 @@
 
 	var load_single = function( rcu, get, modules ) {
 
-		var promises = {}, global = typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : {};
+		var promises = {}, global = typeof window !== 'undefined' ? window : {};
 		return loadSingle;
 
 		function loadSingle( path, parentUrl, baseUrl ) {
