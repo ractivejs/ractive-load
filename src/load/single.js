@@ -56,7 +56,15 @@ define([
 		             global.hasOwnProperty( name ) ? global[ name ] : null;
 
 		if ( !dependency && typeof require === 'function' ) {
-			dependency = require( name );
+			try {
+				dependency = require( name );
+			} catch (e) {
+				if (typeof process !== 'undefined') {
+					dependency = require( process.cwd() + '/' + name );
+				} else {
+					throw e;
+				}
+			}
 		}
 
 		if ( !dependency ) {
