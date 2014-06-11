@@ -18,7 +18,8 @@ module.exports = {
 			Ractive: true,
 			setTimeout: true,
 			global: true,
-			fs: true
+			fs: true,
+			process: true
 		}
 	}
 };
