@@ -18,16 +18,17 @@ define([
 
 	var load = function load ( url ) {
 		var baseUrl = load.baseUrl;
+		var cache = load.cache !== false;
 
 		if ( !url ) {
-			return loadFromLinks( baseUrl );
+			return loadFromLinks( baseUrl, cache );
 		}
 
 		if ( typeof url === 'object' ) {
-			return loadMultiple( url, baseUrl );
+			return loadMultiple( url, baseUrl, cache );
 		}
 
-		return loadSingle( url, baseUrl, baseUrl );
+		return loadSingle( url, baseUrl, baseUrl, cache );
 	};
 
 	load.baseUrl = '';

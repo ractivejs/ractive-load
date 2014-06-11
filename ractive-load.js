@@ -1,6 +1,6 @@
 /*
 
-	ractive-load - v0.2.2 - 2014-06-03
+	ractive-load - v0.2.2 - 2014-06-11
 	===================================================================
 
 	Next-generation DOM manipulation - http://ractivejs.org
@@ -360,13 +360,14 @@
 
 	var load_single = function( rcu, get, modules ) {
 
-		var promises = {}, global = typeof window !== 'undefined' ? window : {};
+		var promises = {},
+			global = typeof window !== 'undefined' ? window : {};
 		return loadSingle;
 
-		function loadSingle( path, parentUrl, baseUrl ) {
+		function loadSingle( path, parentUrl, baseUrl, cache ) {
 			var promise, url;
 			url = rcu.resolve( path, path[ 0 ] === '.' ? parentUrl : baseUrl );
-			if ( !promises[ url ] ) {
+			if ( !cache || !promises[ url ] ) {
 				promise = get( url ).then( function( template ) {
 					return new Ractive.Promise( function( fulfil, reject ) {
 						rcu.make( template, {
@@ -399,14 +400,14 @@
 
 	var load_fromLinks = function( rcu, loadSingle ) {
 
-		return function loadFromLinks( baseUrl ) {
+		return function loadFromLinks( baseUrl, cache ) {
 			var promise = new Ractive.Promise( function( resolve, reject ) {
 				var links, pending;
 				links = toArray( document.querySelectorAll( 'link[rel="ractive"]' ) );
 				pending = links.length;
 				links.forEach( function( link ) {
 					var name = getNameFromLink( link );
-					loadSingle( link.getAttribute( 'href' ), baseUrl ).then( function( Component ) {
+					loadSingle( link.getAttribute( 'href' ), baseUrl, cache ).then( function( Component ) {
 						Ractive.components[ name ] = Component;
 						if ( !--pending ) {
 							resolve();
@@ -433,13 +434,14 @@
 
 	var load_multiple = function( loadSingle ) {
 
-		return function loadMultiple( map, baseUrl ) {
+		return function loadMultiple( map, baseUrl, cache ) {
 			var promise = new Ractive.Promise( function( resolve, reject ) {
 				var pending = 0,
-					result = {}, name, load;
+					result = {},
+					name, load;
 				load = function( name ) {
 					var path = map[ name ];
-					loadSingle( path, baseUrl, baseUrl ).then( function( Component ) {
+					loadSingle( path, baseUrl, baseUrl, cache ).then( function( Component ) {
 						result[ name ] = Component;
 						if ( !--pending ) {
 							resolve( result );
@@ -462,13 +464,14 @@
 		rcu.init( Ractive );
 		var load = function load( url ) {
 			var baseUrl = load.baseUrl;
+			var cache = load.cache !== false;
 			if ( !url ) {
-				return loadFromLinks( baseUrl );
+				return loadFromLinks( baseUrl, cache );
 			}
 			if ( typeof url === 'object' ) {
-				return loadMultiple( url, baseUrl );
+				return loadMultiple( url, baseUrl, cache );
 			}
-			return loadSingle( url, baseUrl, baseUrl );
+			return loadSingle( url, baseUrl, baseUrl, cache );
 		};
 		load.baseUrl = '';
 		load.modules = modules;

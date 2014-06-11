@@ -20,14 +20,14 @@ define([
 	//     Ractive.load( 'path/to/foo' ).then( function ( Foo ) {
 	//       var foo = new Foo(...);
 	//     });
-	function loadSingle ( path, parentUrl, baseUrl ) {
+	function loadSingle ( path, parentUrl, baseUrl, cache ) {
 		var promise, url;
 
 		url = rcu.resolve( path, path[0] === '.' ? parentUrl : baseUrl );
 
 		// if this component has already been requested, don't
 		// request it again
-		if ( !promises[ url ] ) {
+		if ( !cache || !promises[ url ] ) {
 			promise = get( url ).then( function ( template ) {
 				return new Ractive.Promise( function ( fulfil, reject ) {
 					rcu.make( template, {
