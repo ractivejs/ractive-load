@@ -1,6 +1,6 @@
 /*
 
-	ractive-load - v0.2.2 - 2014-06-11
+	ractive-load - v0.3.0 - 2014-07-05
 	===================================================================
 
 	Next-generation DOM manipulation - http://ractivejs.org
@@ -60,7 +60,7 @@
 
 	/*
 
-	rcu (Ractive component utils) - 0.1.8 - 2014-06-02
+	rcu (Ractive component utils) - 0.2.0 - 2014-07-05
 	==============================================================
 
 	Copyright 2014 Rich Harris and contributors
@@ -83,27 +83,31 @@
 		var parse = function( getName ) {
 			var requirePattern = /require\s*\(\s*(?:"([^"]+)"|'([^']+)')\s*\)/g;
 			return function parse( source ) {
-				var template, links, imports, scripts, script, styles, match, modules, i, item;
-				template = Ractive.parse( source, {
+				var parsed, template, links, imports, scripts, script, styles, match, modules, i, item;
+				parsed = Ractive.parse( source, {
 					noStringify: true,
 					interpolateScripts: false,
 					interpolateStyles: false
 				} );
+				if ( parsed.v !== 1 ) {
+					throw new Error( 'Mismatched template version! Please ensure you are using the latest version of Ractive.js in your build process as well as in your app' );
+				}
 				links = [];
 				scripts = [];
 				styles = [];
 				modules = [];
+				template = parsed.t;
 				i = template.length;
 				while ( i-- ) {
 					item = template[ i ];
 					if ( item && item.t === 7 ) {
-						if ( item.e === 'link' && ( item.a && item.a.rel[ 0 ] === 'ractive' ) ) {
+						if ( item.e === 'link' && ( item.a && item.a.rel === 'ractive' ) ) {
 							links.push( template.splice( i, 1 )[ 0 ] );
 						}
-						if ( item.e === 'script' && ( !item.a || !item.a.type || item.a.type[ 0 ] === 'text/javascript' ) ) {
+						if ( item.e === 'script' && ( !item.a || !item.a.type || item.a.type === 'text/javascript' ) ) {
 							scripts.push( template.splice( i, 1 )[ 0 ] );
 						}
-						if ( item.e === 'style' && ( !item.a || !item.a.type || item.a.type[ 0 ] === 'text/css' ) ) {
+						if ( item.e === 'style' && ( !item.a || !item.a.type || item.a.type === 'text/css' ) ) {
 							styles.push( template.splice( i, 1 )[ 0 ] );
 						}
 					}
@@ -116,8 +120,8 @@
 				}
 				imports = links.map( function( link ) {
 					var href, name;
-					href = link.a.href && link.a.href[ 0 ];
-					name = link.a.name && link.a.name[ 0 ] || getName( href );
+					href = link.a.href;
+					name = link.a.name || getName( href );
 					if ( typeof name !== 'string' ) {
 						throw new Error( 'Error parsing link tag' );
 					}
@@ -131,7 +135,7 @@
 					modules.push( match[ 1 ] || match[ 2 ] );
 				}
 				return {
-					template: template,
+					template: parsed,
 					imports: imports,
 					script: script,
 					css: styles.map( extractFragment ).join( ' ' ),
@@ -220,6 +224,7 @@
 					var options, Component, script, factory, component, exports, prop;
 					options = {
 						template: definition.template,
+						partials: definition.partials,
 						css: definition.css,
 						components: imports
 					};
@@ -360,8 +365,7 @@
 
 	var load_single = function( rcu, get, modules ) {
 
-		var promises = {},
-			global = typeof window !== 'undefined' ? window : {};
+		var promises = {}, global = typeof window !== 'undefined' ? window : {};
 		return loadSingle;
 
 		function loadSingle( path, parentUrl, baseUrl, cache ) {
@@ -445,8 +449,7 @@
 		return function loadMultiple( map, baseUrl, cache ) {
 			var promise = new Ractive.Promise( function( resolve, reject ) {
 				var pending = 0,
-					result = {},
-					name, load;
+					result = {}, name, load;
 				load = function( name ) {
 					var path = map[ name ];
 					loadSingle( path, baseUrl, baseUrl, cache ).then( function( Component ) {
