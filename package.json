@@ -1,13 +1,13 @@
 {
   "name": "ractive-load",
-  "version": "0.2.3",
+  "version": "0.3.0",
   "author": {
     "name": "Rich Harris"
   },
   "main": "ractive-load.js",
   "description": "Component loader plugin for Ractive.js",
   "dependencies": {
-    "ractive": ">= 0.4.0"
+    "ractive": ">= 0.5.4"
   },
   "devDependencies": {
     "grunt": "~0.4.1",
@@ -18,7 +18,7 @@
     "grunt-contrib-requirejs": "~0.4.1",
     "amdclean": "~1.2.1",
     "grunt-jsbeautifier": "~0.2.6",
-    "rcu": "~0.1.8",
-    "ractive": "~0.4.0"
+    "rcu": "~0.2.0",
+    "ractive": "~0.5.4"
   }
 }
