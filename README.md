@@ -16,12 +16,12 @@ Include [ractive-load.js](https://raw.githubusercontent.com/ractivejs/ractive-lo
 <script src='lib/ractive-load.js'></script>
 ```
 
-You can also fetch it with bower:
+To get `ractive-load.min.js` you can:
 
-```
-$ bower i ractive-load
-```
-
+- Use CDN: `//cdn.jsdelivr.net/ractive.load/latest/ractive-load.min.js`.
+- Use bower: `$ bower i ractive-load`.
+- [Download the latest release](https://github.com/ractivejs/ractive-load/releases/).
+- Clone the repo: `$ git clone https://github.com/ractivejs/ractive-load.git`.
 
 ## Usage
 
