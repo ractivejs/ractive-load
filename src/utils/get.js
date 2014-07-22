@@ -5,7 +5,7 @@ define( function () {
 	var get;
 
 	// Test for XHR to see if we're in a browser...
-	if ( typeof XMLHttpRequest === 'function' ) {
+	if ( typeof XMLHttpRequest !== 'undefined' ) {
 		get = function ( url ) {
 			return new Ractive.Promise( function ( fulfil, reject ) {
 				var xhr, onload, loaded;
