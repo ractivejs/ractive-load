@@ -1,6 +1,6 @@
 /*
 
-	ractive-load - v0.3.0 - 2014-07-05
+	ractive-load - v0.3.1 - 2014-07-22
 	===================================================================
 
 	Next-generation DOM manipulation - http://ractivejs.org
@@ -325,7 +325,7 @@
 	var utils_get = function() {
 
 		var get;
-		if ( typeof XMLHttpRequest === 'function' ) {
+		if ( typeof XMLHttpRequest !== 'undefined' ) {
 			get = function( url ) {
 				return new Ractive.Promise( function( fulfil, reject ) {
 					var xhr, onload, loaded;
@@ -365,7 +365,8 @@
 
 	var load_single = function( rcu, get, modules ) {
 
-		var promises = {}, global = typeof window !== 'undefined' ? window : {};
+		var promises = {},
+			global = typeof window !== 'undefined' ? window : {};
 		return loadSingle;
 
 		function loadSingle( path, parentUrl, baseUrl, cache ) {
@@ -404,7 +405,7 @@
 			}
 			if ( !dependency ) {
 				qualified = !/^[$_a-zA-Z][$_a-zA-Z0-9]*$/.test( name ) ? '["' + name + '"]' : '.' + name;
-				throw new Error( 'Ractive.load() error: Could not find dependency "' + name + '". It should be exposed as Ractive.lib' + qualified + ' or window' + qualified );
+				throw new Error( 'Ractive.load() error: Could not find dependency "' + name + '". It should be exposed as Ractive.load.modules' + qualified + ' or window' + qualified );
 			}
 			return dependency;
 		}
@@ -449,7 +450,8 @@
 		return function loadMultiple( map, baseUrl, cache ) {
 			var promise = new Ractive.Promise( function( resolve, reject ) {
 				var pending = 0,
-					result = {}, name, load;
+					result = {},
+					name, load;
 				load = function( name ) {
 					var path = map[ name ];
 					loadSingle( path, baseUrl, baseUrl, cache ).then( function( Component ) {
