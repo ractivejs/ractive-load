@@ -29,7 +29,7 @@ define([
 			links.forEach( function ( link ) {
 				var name = getNameFromLink( link );
 
-				loadSingle( link.getAttribute( 'href' ), baseUrl, cache ).then( function ( Component ) {
+				loadSingle( link.getAttribute( 'href' ), '', baseUrl, cache ).then( function ( Component ) {
 					Ractive.components[ name ] = Component;
 
 					if ( !--pending ) {
