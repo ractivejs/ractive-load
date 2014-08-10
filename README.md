@@ -2,7 +2,7 @@
 
 *Find more Ractive.js plugins at [ractivejs.org/plugins](http://ractivejs.org/plugins)*
 
-[See the demo here.](http://ractivejs.github.io/ractive-load/)
+The ractive-load plugin allows you to load Ractive components from HTML files that contain all their markup, CSS and JavaScript. [See here for an introduction to components and component files](https://github.com/ractivejs/component-spec), or [visit the demo page](http://ractivejs.github.io/ractive-load/).
 
 
 ## Installation
@@ -25,8 +25,6 @@ To get `ractive-load.min.js` you can:
 
 ## Usage
 
-*TODO explain what Ractive components are...*
-
 To load a component, along with any sub-components it depends on:
 
 ```js
@@ -47,7 +45,24 @@ Ractive.load( 'foo.html' ).then( function ( FooComponent ) {
 }).catch( handleError );
 ```
 
-*TODO loading multiple components*
+You can load multiple components simultaneously, like so:
+
+```js
+Ractive.load({
+  Foo: 'my-components/foo.html',
+  Bar: 'my-components/bar.html'
+}).then( function ( components ) {
+  var foo = new components.Foo({
+    el: 'body',
+    data: { ... }
+  });
+
+  var bar = new components.Bar({
+    el: 'body',
+    data: { ... }
+  });
+}).catch( handleError );
+```
 
 
 ## Defining module dependencies
@@ -104,6 +119,6 @@ load( 'my-components/foo.html' ).then( function ( FooComponent ) {
 
 ## License
 
-Copyright (c) 2014 Rich Harris. Licensed MIT
+Licensed MIT.
 
 Created with the [Ractive.js plugin template](https://github.com/ractivejs/plugin-template) for Grunt.
