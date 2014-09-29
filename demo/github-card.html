@@ -9,3 +9,13 @@
   src='http://lab.lepture.com/github-cards/card.html?user={{user}}{{#repo}}&amp;repo={{repo}}{{/repo}}'
   frameborder='0' scrolling='0' width='400' height='170' allowtransparency
 ></iframe>
+
+<script>
+	console.log( 'notice that the source is correctly identified as github-card.html' );
+
+	component.exports = {
+		init: function () {
+			throw new Error( 'This makes it way easier to track down errors' );
+		}
+	};
+</script>
