@@ -1,24 +1,31 @@
 {
   "name": "ractive-load",
-  "version": "0.3.2",
+  "version": "0.4.0",
   "author": {
     "name": "Rich Harris"
   },
   "main": "ractive-load.js",
   "description": "Component loader plugin for Ractive.js",
   "dependencies": {
-    "ractive": ">= 0.5.4"
+    "ractive": "^0.6.0"
   },
   "devDependencies": {
+    "amdclean": "~1.2.1",
+    "gobble": "^0.5.11",
+    "gobble-amdclean": "^0.1.0",
+    "gobble-jsbeautify": "^0.1.0",
+    "gobble-replace": "^0.1.0",
+    "gobble-requirejs": "^0.2.0",
+    "gobble-uglifyjs": "^0.1.0",
     "grunt": "~0.4.1",
     "grunt-contrib-concat": "~0.3.0",
-    "grunt-contrib-uglify": "~0.2.5",
+    "grunt-contrib-copy": "^0.6.0",
     "grunt-contrib-jshint": "~0.7.0",
-    "grunt-contrib-copy": "~0.4.1",
     "grunt-contrib-requirejs": "~0.4.1",
-    "amdclean": "~1.2.1",
+    "grunt-contrib-uglify": "~0.2.5",
+    "grunt-gobble": "^0.1.1",
     "grunt-jsbeautifier": "~0.2.6",
-    "rcu": "~0.2.0",
-    "ractive": "~0.5.4"
+    "moment": "^2.8.3",
+    "rcu": "^0.3.0"
   }
 }
