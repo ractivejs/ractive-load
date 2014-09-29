@@ -4,10 +4,8 @@ module.exports = function ( grunt ) {
 
 	grunt.registerTask( 'default', [
 		'jshint',
-		'requirejs',
-		'concat',
-		'jsbeautifier',
-		'uglify'
+		'gobble',
+		'copy'
 	]);
 
 };

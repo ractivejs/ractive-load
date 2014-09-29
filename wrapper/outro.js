@@ -4,12 +4,12 @@
 		Object.defineProperty( Ractive, 'lib', {
 			get: function () {
 				console && console.warn && console.warn( '`Ractive.lib` has been deprecated. Use `Ractive.load.modules` as a module registry instead' );
-				return load.modules;
+				return _load_.modules;
 			}
 		});
 	} catch ( err ) {}
 
-	Ractive.load = load;
-	return load;
+	Ractive.load = _load_;
+	return _load_;
 
 }));
