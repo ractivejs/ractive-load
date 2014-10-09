@@ -6,7 +6,7 @@
 
 	<!-- CSS -->
 	<link href='http://fonts.googleapis.com/css?family=Voltaire' rel='stylesheet' type='text/css'>
-	<link rel='stylesheet' href='demo/main.css'>
+	<link rel='stylesheet' href='main.css'>
 
 	<!-- TODO add styles specific to this demo -->
 	<style type='text/css'>
@@ -23,16 +23,12 @@
 		<h1>Ractive.js load plugin</h1>
 		<p class='strap'>
 			<span class='download'>download: <a href='https://raw.github.com/ractivejs/ractive-load/master/ractive-load.js'>ractive-load.js</a></span>
-			<span class='more-plugins'>more plugins at <a href='http://ractivejs.org/plugins'>ractivejs.org/plugins</a></span>
+			<span class='more-plugins'>more plugins at <a href='http://docs.ractivejs.org/latest/plugins'>ractivejs.org/plugins</a></span>
 		</p>
 	</header>
 
 	<main>
-		<p><em>Warning: this represents work in progress! The spec for single-file components will likely change before it can be considered stable, and you may need to use the development version of Ractive (currently <a href='https://github.com/ractivejs/ractive/tree/0.4.0/build'>0.4.0</a>). If you'd like to get involved, <a href='https://github.com/ractivejs/ractive/issues/366'>join this thread</a>.</em></p>
-
-		<p>Description coming soon!</p>
-
-
+		<p>The ractive-load plugin allows you to load <a href='https://github.com/ractivejs/component-spec/'>component files</a>, which are a way of encapsulating markup, styles, behaviours and default data into a single file. It's ideal for quick prototypes and smaller apps - if you need something more production-grade that integrates into your build process, try one of the <a href='https://github.com/ractivejs/component-spec/#available-loaders'>alternative component loaders</a>.</p>
 
 		<div id='demo' class='clearfix'></div>
 
@@ -58,12 +54,12 @@
 	</script>
 
 	<!-- Dependencies -->
-	<script src='vendor/ractive/ractive-legacy.js'></script>
+	<script src='ractive.js'></script>
 	<script src='ractive-load.js'></script>
 
 	<!-- Demo code -->
 	<script id='demo-code'>
-		Ractive.load( 'demo/github-card.html' ).then( function ( GithubCard ) {
+		Ractive.load( 'github-card.html' ).then( function ( GithubCard ) {
 			Ractive.components[ 'github-card' ] = GithubCard;
 
 			var ractive = new Ractive({
@@ -76,12 +72,12 @@
 				lazy: true // only update when inputs blur
 			});
 		}).catch( function ( err ) {
-			console.error( err.message || err );
+			setTimeout( function () { throw err; });
 		});
 	</script>
 
 	<!-- Insert code into the page -->
-	<script src='demo/prettify.js'></script>
-	<script src='demo/demo.js'></script>
+	<script src='prettify.js'></script>
+	<script src='demo.js'></script>
 </body>
 </html>

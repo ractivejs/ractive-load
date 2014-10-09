@@ -1,6 +1,6 @@
 /*
 
-	ractive-load - v<%= pkg.version %> - <%= grunt.template.today( 'yyyy-mm-dd' ) %>
+	ractive-load - v${version} - ${date}
 	===================================================================
 
 	Next-generation DOM manipulation - http://ractivejs.org
@@ -8,7 +8,7 @@
 
 	-------------------------------------------------------------------
 
-	Copyright <%= grunt.template.today( 'yyyy' ) %> Rich Harris
+	Copyright ${year} Rich Harris
 
 	Permission is hereby granted, free of charge, to any person
 	obtaining a copy of this software and associated documentation
