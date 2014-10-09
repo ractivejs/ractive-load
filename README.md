@@ -1,6 +1,6 @@
 # Ractive.js load plugin
 
-*Find more Ractive.js plugins at [ractivejs.org/plugins](http://ractivejs.org/plugins)*
+*Find more Ractive.js plugins at [docs.ractivejs.org/latest/plugins](http://docs.ractivejs.org/latest/plugins)*
 
 The ractive-load plugin allows you to load Ractive components from HTML files that contain all their markup, CSS and JavaScript. [See here for an introduction to components and component files](https://github.com/ractivejs/component-spec), or [visit the demo page](http://ractivejs.github.io/ractive-load/).
 
