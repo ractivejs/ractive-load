@@ -1,6 +1,6 @@
 /*
 
-	ractive-load - v0.4.0 - 2014-09-28
+	ractive-load - v0.4.0 - 2014-10-08
 	===================================================================
 
 	Next-generation DOM manipulation - http://ractivejs.org
@@ -60,7 +60,7 @@
 
     /*
 
-	rcu (Ractive component utils) - 0.3.0 - 2014-09-28
+	rcu (Ractive component utils) - 0.3.0 - 2014-10-08
 	==============================================================
 
 	Copyright 2014 Rich Harris and contributors
