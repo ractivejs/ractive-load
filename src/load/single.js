@@ -36,7 +36,7 @@ define([
 							// if import has a relative URL, it should resolve
 							// relative to this (parent). Otherwise, relative
 							// to load.baseUrl
-							loadSingle( path, parentUrl, baseUrl ).then( callback, reject );
+							loadSingle( path, parentUrl, baseUrl, cache ).then( callback, reject );
 						},
 						require: ractiveRequire
 					}, fulfil, reject );
