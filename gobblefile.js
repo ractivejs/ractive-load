@@ -1,53 +1,61 @@
-var fs = require( 'fs' ),
-	path = require( 'path' ),
-	moment = require( 'moment' ),
-	gobble = require( 'gobble' ),
+var gobble = require( 'gobble' );
+var path = require( 'path' );
+var resolve = require( 'resolve' );
+var Promise = require( 'es6-promise' ).Promise;
 
-	src,
-	node_modules,
-	compiled,
-	beautified,
-	uglified,
-	today = moment(),
+var to5 = require( '6to5-core' );
 
-	demo;
+gobble.cwd( __dirname );
 
-src = gobble( 'src' );
-node_modules = gobble( 'node_modules', { static: true });
+module.exports = gobble( 'src' )
+.transform( '6to5', {
+	blacklist: [ 'es6.modules', 'useStrict' ],
+	sourceMap: false
+})
+.transform( 'esperanto-bundle', {
+	entry: 'load',
+	dest: 'ractive-load',
+	type: 'umd',
+	name: 'Ractive.load',
+	sourceMap: false,
 
-compiled = gobble([ src, node_modules ])
-	.transform( 'requirejs', {
-		name: 'load',
-		out: 'ractive-load.js',
-		optimize: 'none',
-		paths: {
-			rcu: 'rcu/rcu.amd'
+	resolvePath: function ( importee, importer ) {
+		return new Promise( function ( fulfil, reject ) {
+			var callback = function ( err, result ) {
+				if ( err ) {
+					reject( err );
+				} else {
+					fulfil( result );
+				}
+			};
+
+			resolve( importee, {
+				basedir: path.dirname( importer ),
+				packageFilter: function ( pkg ) {
+					if ( pkg[ 'jsnext:main' ] ) {
+						pkg.main = pkg[ 'jsnext:main' ];
+						return pkg;
+					}
+
+					var err = new Error( 'package ' + pkg.name + ' does not supply a jsnext:main field' );
+					err.code = 'ENOENT'; // hack
+					reject( err );
+					return {};
+				}
+			}, callback );
+		});
+	},
+
+	transform: function ( code, path ) {
+		// this is awkward - dependencies written in ES6 don't
+		// get transpiled by the previous step. So we have to
+		// hack around it. not ideal...
+		if ( /node_modules/.test( path ) ) {
+			return to5.transform( code, {
+				blacklist: [ 'es6.modules', 'useStrict' ]
+			}).code;
 		}
-	})
-	.transform( 'amdclean', {
-		wrap: {
-			start: fs.readFileSync( path.join( __dirname, 'wrapper/intro.js' ) ).toString(),
-			end: fs.readFileSync( path.join( __dirname, 'wrapper/outro.js' ) ).toString()
-		}
-	})
-	.transform( 'replace', {
-		version: require( './package.json' ).version,
-		year: today.format( 'YYYY' ),
-		date: today.format( 'YYYY-MM-DD' )
-	});
 
-beautified = compiled.transform( 'jsbeautify', {
-	indentWithTabs: true,
-	spaceBeforeConditional: true,
-	spaceInParen: true
+		return code;
+	}
 });
-
-uglified = compiled.transform( 'uglifyjs', { ext: '.min.js' });
-
-demo = gobble([
-	'demo',
-	node_modules.grab( 'ractive' ).include( 'ractive.js' ),
-	beautified
-]).moveTo( 'demo' );
-
-module.exports = gobble([ demo, beautified, uglified ]);
