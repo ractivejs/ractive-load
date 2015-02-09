@@ -1,39 +1,27 @@
-define([
-	'rcu',
-	'load/fromLinks',
-	'load/single',
-	'load/multiple',
-	'load/modules'
-], function (
-	rcu,
-	loadFromLinks,
-	loadSingle,
-	loadMultiple,
-	modules
-) {
+import Ractive from 'ractive';
+import rcu from 'rcu';
+import loadFromLinks from './load/fromLinks';
+import loadSingle from './load/single';
+import loadMultiple from './load/multiple';
 
-	'use strict';
+rcu.init( Ractive );
 
-	rcu.init( Ractive );
+function load ( url ) {
+	var baseUrl = load.baseUrl;
+	var cache = load.cache !== false;
 
-	var load = function load ( url ) {
-		var baseUrl = load.baseUrl;
-		var cache = load.cache !== false;
+	if ( !url ) {
+		return loadFromLinks( baseUrl, cache );
+	}
 
-		if ( !url ) {
-			return loadFromLinks( baseUrl, cache );
-		}
+	if ( typeof url === 'object' ) {
+		return loadMultiple( url, baseUrl, cache );
+	}
 
-		if ( typeof url === 'object' ) {
-			return loadMultiple( url, baseUrl, cache );
-		}
+	return loadSingle( url, baseUrl, baseUrl, cache );
+}
 
-		return loadSingle( url, baseUrl, baseUrl, cache );
-	};
+load.baseUrl = '';
+load.modules = {};
 
-	load.baseUrl = '';
-	load.modules = modules;
-
-	return load;
-
-});
+export default load;
