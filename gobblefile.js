@@ -3,12 +3,12 @@ var path = require( 'path' );
 var resolve = require( 'resolve' );
 var Promise = require( 'es6-promise' ).Promise;
 
-var to5 = require( '6to5-core' );
+var babel = require( 'babel-core' );
 
 gobble.cwd( __dirname );
 
 module.exports = gobble( 'src' )
-.transform( '6to5', {
+.transform( 'babel', {
 	blacklist: [ 'es6.modules', 'useStrict' ],
 	sourceMap: false
 })
@@ -51,7 +51,7 @@ module.exports = gobble( 'src' )
 		// get transpiled by the previous step. So we have to
 		// hack around it. not ideal...
 		if ( /node_modules/.test( path ) ) {
-			return to5.transform( code, {
+			return babel.transform( code, {
 				blacklist: [ 'es6.modules', 'useStrict' ]
 			}).code;
 		}

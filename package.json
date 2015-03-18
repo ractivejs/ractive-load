@@ -1,6 +1,6 @@
 {
   "name": "ractive-load",
-  "version": "0.5.0-edge",
+  "version": "0.5.0",
   "author": {
     "name": "Rich Harris"
   },
@@ -10,14 +10,14 @@
   "jsnext:main": "src/load.js",
   "description": "Component loader plugin for Ractive.js",
   "dependencies": {
-    "ractive": "git://github.com/ractivejs/ractive#build",
-    "rcu": "git://github.com/ractivejs/rcu#edge"
+    "ractive": "^0.7.1",
+    "rcu": "^0.4.0"
   },
   "devDependencies": {
-    "6to5-core": "^3.5.3",
+    "babel-core": "^4.7.16",
     "es6-promise": "^2.0.1",
     "gobble": "^0.7.2",
-    "gobble-6to5": "^3.0.0",
+    "gobble-babel": "^4.0.1",
     "gobble-esperanto-bundle": "^0.1.7",
     "gobble-replace": "^0.1.0",
     "resolve": "^1.1.0",
