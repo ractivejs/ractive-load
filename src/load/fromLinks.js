@@ -23,7 +23,7 @@ export default function loadFromLinks ( baseUrl, cache ) {
 		links.forEach( function ( link ) {
 			var name = getNameFromLink( link );
 
-			loadSingle( link.getAttribute( 'href' ), baseUrl, cache ).then( function ( Component ) {
+			loadSingle( link.getAttribute( 'href' ), '', baseUrl, cache ).then( function ( Component ) {
 				Ractive.components[ name ] = Component;
 
 				if ( !--pending ) {
@@ -34,7 +34,7 @@ export default function loadFromLinks ( baseUrl, cache ) {
 	});
 
 	return promise;
-};
+}
 
 function getNameFromLink ( link ) {
 	return link.getAttribute( 'name' ) || rcu.getName( link.getAttribute( 'href' ) );
