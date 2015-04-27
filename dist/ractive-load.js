@@ -4,6 +4,8 @@
   global.Ractive.load = factory(global.Ractive)
 }(this, function (Ractive) { 'use strict';
 
+  var src_getName = getName;
+
   function getName(path) {
   	var pathParts, filename, lastIndex;
 
@@ -29,7 +31,7 @@
        * @property {number} column - the zero-based column index
        * @property {number} char - the character index that was passed in
    */
-
+  var utils_getLinePosition = getLinePosition;
 
   function getLinePosition(lines, char) {
   	var lineEnds,
@@ -52,6 +54,8 @@
   	column = char - lineStart;
   	return { line: line, column: column, char: char };
   }
+
+  var src_parse = parse;
 
   var requirePattern = /require\s*\(\s*(?:"([^"]+)"|'([^']+)')\s*\)/g;
   var TEMPLATE_VERSION = 3;
@@ -117,7 +121,7 @@
   		var href, name;
 
   		href = link.a.href;
-  		name = link.a.name || getName(href);
+  		name = link.a.name || src_getName(href);
 
   		if (typeof name !== "string") {
   			throw new Error("Error parsing link tag");
@@ -148,8 +152,8 @@
 
   			lines = source.split("\n");
 
-  			result.scriptStart = getLinePosition(lines, contentStart);
-  			result.scriptEnd = getLinePosition(lines, contentEnd);
+  			result.scriptStart = utils_getLinePosition(lines, contentStart);
+  			result.scriptEnd = utils_getLinePosition(lines, contentEnd);
   		})();
 
   		// Glue scripts together, for convenience
@@ -166,6 +170,8 @@
   function extractFragment(item) {
   	return item.f;
   }
+
+  var _eval2 = eval2;
 
   var _eval, isBrowser, isNode, head, Module, base64Encode;
 
@@ -184,7 +190,16 @@
   }
 
   if (typeof btoa === "function") {
-  	base64Encode = btoa;
+  	base64Encode = function (str) {
+  		str = str.replace(/[^\x00-\x7F]/g, function (char) {
+  			var hex = char.charCodeAt(0).toString(16);
+  			while (hex.length < 4) hex = "0" + hex;
+
+  			return "\\u" + hex;
+  		});
+
+  		return btoa(str);
+  	};
   } else if (typeof Buffer === "function") {
   	base64Encode = function (str) {
   		return new Buffer(str, "utf-8").toString("base64");
@@ -385,13 +400,13 @@
    * @param {string} str - the string to encode
    * @returns {string}
    */
-  var btoa__default = btoa__btoa;
+  var utils_btoa = utils_btoa__btoa;
 
-  function btoa__btoa(str) {
+  function utils_btoa__btoa(str) {
     return new Buffer(str).toString("base64");
   }
 
-  var SourceMap__SourceMap = function SourceMap__SourceMap(properties) {
+  var utils_SourceMap__SourceMap = function SourceMap(properties) {
   	this.version = 3;
 
   	this.file = properties.file;
@@ -401,17 +416,17 @@
   	this.mappings = properties.mappings;
   };
 
-  SourceMap__SourceMap.prototype = {
+  utils_SourceMap__SourceMap.prototype = {
   	toString: function toString() {
   		return JSON.stringify(this);
   	},
 
   	toUrl: function toUrl() {
-  		return "data:application/json;charset=utf-8;base64," + btoa__default(this.toString());
+  		return "data:application/json;charset=utf-8;base64," + utils_btoa(this.toString());
   	}
   };
 
-  var SourceMap__default = SourceMap__SourceMap;
+  var utils_SourceMap = utils_SourceMap__SourceMap;
 
   /**
    * Generates a v3 sourcemap between an original source and its built form
@@ -423,7 +438,7 @@
    * @param {string=} options.file - the name of the generated file
    * @returns {object}
    */
-
+  var src_generateSourceMap = generateSourceMap;
   function generateSourceMap(definition, options) {
   	var lines, mappings, offset;
 
@@ -449,7 +464,7 @@
   		return "AACA"; // equates to [ 0, 0, 1, 0 ];
   	}).join(";");
 
-  	return new SourceMap__default({
+  	return new utils_SourceMap({
   		file: options.file,
   		sources: [options.source],
   		sourcesContent: [definition.source],
@@ -458,6 +473,7 @@
   	});
   }
 
+  var src_make = make;
   function make(source, config, callback, errback) {
   	var definition, url, createComponent, loadImport, imports, loadModule, modules, remainingDependencies, onloaded, ready;
 
@@ -468,7 +484,7 @@
   	loadImport = config.loadImport;
   	loadModule = config.loadModule;
 
-  	definition = parse(source);
+  	definition = src_parse(source);
 
   	createComponent = function () {
   		var options, Component, factory, component, exports, prop;
@@ -481,13 +497,13 @@
   		};
 
   		if (definition.script) {
-  			var sourceMap = generateSourceMap(definition, {
+  			var sourceMap = src_generateSourceMap(definition, {
   				source: url,
   				content: source
   			});
 
   			try {
-  				factory = new eval2.Function("component", "require", "Ractive", definition.script, {
+  				factory = new _eval2.Function("component", "require", "Ractive", definition.script, {
   					sourceMap: sourceMap
   				});
 
@@ -569,7 +585,7 @@
   	ready = true;
   }
 
-  var resolve = resolvePath;
+  var src_resolve = resolvePath;
 
   function resolvePath(relativePath, base) {
   	var pathParts, relativePathParts, part;
@@ -603,11 +619,11 @@
   		rcu.Ractive = copy;
   	},
 
-  	parse: parse,
-  	make: make,
-  	generateSourceMap: generateSourceMap,
-  	resolve: resolve,
-  	getName: getName
+  	parse: src_parse,
+  	make: src_make,
+  	generateSourceMap: src_generateSourceMap,
+  	resolve: src_resolve,
+  	getName: src_getName
   };
 
   var _rcu = rcu;
@@ -658,10 +674,12 @@
   	};
   }
 
+  var utils_get = get;
+
   var promises = {},
       global = typeof window !== "undefined" ? window : {};
 
-
+  var single = loadSingle;
 
   // Load a single component:
   //
@@ -676,7 +694,7 @@
   	// if this component has already been requested, don't
   	// request it again
   	if (!cache || !promises[url]) {
-  		promise = get(url).then(function (template) {
+  		promise = utils_get(url).then(function (template) {
   			return new Ractive.Promise(function (fulfil, reject) {
   				_rcu.make(template, {
   					url: url,
@@ -700,7 +718,7 @@
   function ractiveRequire(name) {
   	var dependency, qualified;
 
-  	dependency = load__default.modules.hasOwnProperty(name) ? load__default.modules[name] : global.hasOwnProperty(name) ? global[name] : null;
+  	dependency = _load.modules.hasOwnProperty(name) ? _load.modules[name] : global.hasOwnProperty(name) ? global[name] : null;
 
   	if (!dependency && typeof require === "function") {
   		try {
@@ -733,7 +751,7 @@
   //     Ractive.load().then( function () {
   //       var foo = new Ractive.components.foo(...);
   //     });
-
+  var fromLinks = loadFromLinks;
 
   function loadFromLinks(baseUrl, cache) {
   	var promise = new Ractive.Promise(function (resolve, reject) {
@@ -745,7 +763,7 @@
   		links.forEach(function (link) {
   			var name = getNameFromLink(link);
 
-  			loadSingle(link.getAttribute("href"), "", baseUrl, cache).then(function (Component) {
+  			single(link.getAttribute("href"), "", baseUrl, cache).then(function (Component) {
   				Ractive.components[name] = Component;
 
   				if (! --pending) {
@@ -782,7 +800,7 @@
   //       var foo = new components.foo(...);
   //       var bar = new components.bar(...);
   //     });
-
+  var multiple = loadMultiple;
   function loadMultiple(map, baseUrl, cache) {
   	var promise = new Ractive.Promise(function (resolve, reject) {
   		var pending = 0,
@@ -793,7 +811,7 @@
   		load = function (name) {
   			var path = map[name];
 
-  			loadSingle(path, baseUrl, baseUrl, cache).then(function (Component) {
+  			single(path, baseUrl, baseUrl, cache).then(function (Component) {
   				result[name] = Component;
 
   				if (! --pending) {
@@ -820,21 +838,21 @@
   	var cache = load.cache !== false;
 
   	if (!url) {
-  		return loadFromLinks(baseUrl, cache);
+  		return fromLinks(baseUrl, cache);
   	}
 
   	if (typeof url === "object") {
-  		return loadMultiple(url, baseUrl, cache);
+  		return multiple(url, baseUrl, cache);
   	}
 
-  	return loadSingle(url, baseUrl, baseUrl, cache);
+  	return single(url, baseUrl, baseUrl, cache);
   }
 
   load.baseUrl = "";
   load.modules = {};
 
-  var load__default = load;
+  var _load = load;
 
-  return load__default;
+  return _load;
 
 }));

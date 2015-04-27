@@ -1,5 +1,9 @@
 # changelog
 
+## 0.5.2
+
+* Rebuilt for real this time
+
 ## 0.5.1
 
 * Rebuilt to incorporate eval2 fix
