@@ -30,6 +30,7 @@
        * @property {number} char - the character index that was passed in
    */
 
+
   function getLinePosition(lines, char) {
   	var lineEnds,
   	    line = 0,
@@ -53,7 +54,8 @@
   }
 
   var requirePattern = /require\s*\(\s*(?:"([^"]+)"|'([^']+)')\s*\)/g;
-  var TEMPLATE_VERSION = 3;function parse(source) {
+  var TEMPLATE_VERSION = 3;
+  function parse(source) {
   	var parsed, template, links, imports, scriptItem, script, styles, match, modules, i, item, result;
 
   	if (!rcu.Ractive) {
@@ -159,11 +161,16 @@
   	}
 
   	return result;
-  }function extractFragment(item) {
+  }
+
+  function extractFragment(item) {
   	return item.f;
   }
 
   var _eval, isBrowser, isNode, head, Module, base64Encode;
+
+  var SOURCE_MAPPING_URL = "sourceMappingUrl";
+  var DATA = "data";
 
   // This causes code to be eval'd in the global scope
   _eval = eval;
@@ -184,11 +191,12 @@
   	};
   } else {
   	base64Encode = function () {};
-  }function eval2(script, options) {
+  }
+  function eval2(script, options) {
   	options = options || {};
 
   	if (options.sourceMap) {
-  		script += "\n//# sourceMappingURL=data:application/json;charset=utf-8;base64," + base64Encode(JSON.stringify(options.sourceMap));
+  		script += "\n//# " + SOURCE_MAPPING_URL + "=data:application/json;charset=utf-8;base64," + base64Encode(JSON.stringify(options.sourceMap));
   	} else if (options.sourceURL) {
   		script += "\n//# sourceURL=" + options.sourceURL;
   	}
@@ -209,7 +217,9 @@
 
   		throw err;
   	}
-  }eval2.Function = function () {
+  }
+
+  eval2.Function = function () {
   	var i,
   	    args = [],
   	    body,
@@ -227,13 +237,17 @@
   		options = {};
   	}
 
+  	// allow an array of arguments to be passed
+  	if (args.length === 1 && Object.prototype.toString.call(args) === "[object Array]") {
+  		args = args[0];
+  	}
+
   	if (options.sourceMap) {
   		options.sourceMap = clone(options.sourceMap);
 
   		// shift everything a line down, to accommodate `(function (...) {`
   		options.sourceMap.mappings = ";" + options.sourceMap.mappings;
   	}
-
 
   	body = args.pop();
   	wrapped = "(function (" + args.join(", ") + ") {\n" + body + "\n})";
@@ -244,7 +258,7 @@
   function locateErrorUsingDataUri(code) {
   	var dataURI, scriptElement;
 
-  	dataURI = "data:text/javascript;charset=utf-8," + encodeURIComponent(code);
+  	dataURI = DATA + ":text/javascript;charset=utf-8," + encodeURIComponent(code);
 
   	scriptElement = document.createElement("script");
   	scriptElement.src = dataURI;
@@ -288,7 +302,8 @@
   "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=".split("").forEach(function (char, i) {
   	charToInteger[char] = i;
   	integerToChar[i] = char;
-  });function decode(string) {
+  });
+  function decode(string) {
   	var result = [],
   	    len = string.length,
   	    i,
@@ -324,22 +339,24 @@
   	}
 
   	return result;
-  }function encode(value) {
-  	var result;
+  }
+
+  function encode(value) {
+  	var result, i;
 
   	if (typeof value === "number") {
   		result = encodeInteger(value);
-  	} else if (Array.isArray(value)) {
-  		result = "";
-  		value.forEach(function (num) {
-  			result += encodeInteger(num);
-  		});
   	} else {
-  		throw new Error("vlq.encode accepts an integer or an array of integers");
+  		result = "";
+  		for (i = 0; i < value.length; i += 1) {
+  			result += encodeInteger(value[i]);
+  		}
   	}
 
   	return result;
-  }function encodeInteger(num) {
+  }
+
+  function encodeInteger(num) {
   	var result = "",
   	    clamped;
 
@@ -369,11 +386,12 @@
    * @returns {string}
    */
   var btoa__default = btoa__btoa;
+
   function btoa__btoa(str) {
     return new Buffer(str).toString("base64");
   }
 
-  var SourceMap = function (properties) {
+  var SourceMap__SourceMap = function SourceMap__SourceMap(properties) {
   	this.version = 3;
 
   	this.file = properties.file;
@@ -383,7 +401,7 @@
   	this.mappings = properties.mappings;
   };
 
-  SourceMap.prototype = {
+  SourceMap__SourceMap.prototype = {
   	toString: function toString() {
   		return JSON.stringify(this);
   	},
@@ -393,20 +411,21 @@
   	}
   };
 
+  var SourceMap__default = SourceMap__SourceMap;
+
   /**
    * Generates a v3 sourcemap between an original source and its built form
    * @param {object} definition - the result of `rcu.parse( originalSource )`
    * @param {object} options
    * @param {string} options.source - the name of the original source file
-   * @param {number=} options.padding - the number of lines in the generated
+   * @param {number=} options.offset - the number of lines in the generated
      code that precede the script portion of the original source
    * @param {string=} options.file - the name of the generated file
    * @returns {object}
    */
 
-  function generateSourceMap(definition) {
-  	var options = arguments[1] === undefined ? {} : arguments[1];
-  	var lines, mappings, padding;
+  function generateSourceMap(definition, options) {
+  	var lines, mappings, offset;
 
   	if (!options || !options.source) {
   		throw new Error("You must supply an options object with a `source` property to rcu.generateSourceMap()");
@@ -414,10 +433,10 @@
 
   	// The generated code probably includes a load of module gubbins - we don't bother
   	// mapping that to anything, instead we just have a bunch of empty lines
-  	padding = new Array((options.padding || 0) + 1).join(";");
+  	offset = new Array((options.offset || 0) + 1).join(";");
 
   	lines = definition.script.split("\n");
-  	mappings = padding + lines.map(function (line, i) {
+  	mappings = offset + lines.map(function (line, i) {
   		if (i === 0) {
   			// first mapping points to code immediately following opening <script> tag
   			return encode([0, 0, definition.scriptStart.line, definition.scriptStart.column]);
@@ -430,7 +449,7 @@
   		return "AACA"; // equates to [ 0, 0, 1, 0 ];
   	}).join(";");
 
-  	return new SourceMap({
+  	return new SourceMap__default({
   		file: options.file,
   		sources: [options.source],
   		sourcesContent: [definition.source],
@@ -551,6 +570,7 @@
   }
 
   var resolve = resolvePath;
+
   function resolvePath(relativePath, base) {
   	var pathParts, relativePathParts, part;
 
@@ -660,11 +680,11 @@
   			return new Ractive.Promise(function (fulfil, reject) {
   				_rcu.make(template, {
   					url: url,
-  					loadImport: function (name, path, parentUrl, callback) {
+  					loadImport: function loadImport(name, path, parentUrl, callback) {
   						// if import has a relative URL, it should resolve
   						// relative to this (parent). Otherwise, relative
   						// to load.baseUrl
-  						loadSingle(path, parentUrl, baseUrl).then(callback, reject);
+  						loadSingle(path, parentUrl, baseUrl, cache).then(callback, reject);
   					},
   					require: ractiveRequire
   				}, fulfil, reject);
@@ -725,7 +745,7 @@
   		links.forEach(function (link) {
   			var name = getNameFromLink(link);
 
-  			loadSingle(link.getAttribute("href"), baseUrl, cache).then(function (Component) {
+  			loadSingle(link.getAttribute("href"), "", baseUrl, cache).then(function (Component) {
   				Ractive.components[name] = Component;
 
   				if (! --pending) {
@@ -736,7 +756,9 @@
   	});
 
   	return promise;
-  }function getNameFromLink(link) {
+  }
+
+  function getNameFromLink(link) {
   	return link.getAttribute("name") || _rcu.getName(link.getAttribute("href"));
   }
 

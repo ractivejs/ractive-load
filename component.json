@@ -2,7 +2,7 @@
 	"name": "ractive-load",
 	"repo": "https://github.com/ractivejs/ractive-load",
 	"description": "Component loader plugin for Ractive.js",
-	"version": "0.5.0",
+	"version": "0.5.1",
 	"keywords": [],
 	"dependencies": {
 		"ractivejs/ractive": "^0.7.1"
