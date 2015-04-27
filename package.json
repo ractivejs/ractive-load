@@ -1,6 +1,6 @@
 {
   "name": "ractive-load",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "author": {
     "name": "Rich Harris"
   },
@@ -16,16 +16,23 @@
   "devDependencies": {
     "babel-core": "^4.7.16",
     "es6-promise": "^2.0.1",
-    "gobble": "^0.7.2",
+    "gobble": "^0.9.2",
     "gobble-babel": "^4.0.1",
     "gobble-esperanto-bundle": "^0.1.7",
     "gobble-replace": "^0.1.0",
+    "gobble-uglifyjs": "^0.2.1",
     "resolve": "^1.1.0",
     "sander": "^0.2.2"
   },
   "scripts": {
     "test": "mocha",
-    "build": "set -e; npm test; cp -r test/lib dist",
+    "build": "set -e; npm test; cp -r test/lib/* dist",
     "prepublish": "npm run build"
-  }
+  },
+  "files": [
+    "src",
+    "dist",
+    "README.md",
+    "LICENSE-MIT"
+  ]
 }
