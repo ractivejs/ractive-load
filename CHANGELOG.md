@@ -1,5 +1,9 @@
 # changelog
 
+## 0.6.0
+
+* Overhaul build process etc
+
 ## 0.5.2
 
 * Rebuilt for real this time

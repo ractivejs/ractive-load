@@ -9,15 +9,12 @@
 		before( function () {
 			if ( typeof require === 'function' ) {
 				assert = require( 'assert' );
-
-				return require( './utils/build' )().then( function ( lib ) {
-					load = lib;
-					load.baseUrl = __dirname + '/';
-				});
+				load = require( '../dist/ractive-load.umd.js' );
+				load.baseUrl = __dirname + '/';
+			} else {
+				assert = chai.assert;
+				load = Ractive.load;
 			}
-
-			assert = chai.assert;
-			load = Ractive.load;
 		});
 
 		it( 'should load a simple component', function () {
@@ -50,4 +47,3 @@
 	});
 
 }());
-
