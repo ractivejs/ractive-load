@@ -18,7 +18,7 @@ Include [ractive-load.js](https://raw.githubusercontent.com/ractivejs/ractive-lo
 
 To get `ractive-load.min.js` you can:
 
-- Use CDN: `//cdn.jsdelivr.net/ractive.load/latest/ractive-load.min.js`.
+- Use CDN: `https://cdn.jsdelivr.net/npm/ractive-load@0.6.0/dist/ractive-load.umd.min.js`.
 - Use bower: `$ bower i ractive-load`.
 - [Download the latest release](https://github.com/ractivejs/ractive-load/releases/).
 - Clone the repo: `$ git clone https://github.com/ractivejs/ractive-load.git`.
