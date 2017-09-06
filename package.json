@@ -10,7 +10,7 @@
   "jsnext:main": "dist/ractive-load.es.js",
   "description": "Component loader plugin for Ractive.js",
   "dependencies": {
-    "rcu": "^0.4.0"
+    "rcu": "^0.8.0"
   },
   "devDependencies": {
     "eslint": "^2.11.1",

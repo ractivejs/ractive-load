@@ -1,5 +1,5 @@
 import Ractive from 'ractive';
-import rcu from 'rcu';
+import * as rcu from 'rcu';
 import loadFromLinks from './load/fromLinks';
 import loadSingle from './load/single';
 import loadMultiple from './load/multiple';

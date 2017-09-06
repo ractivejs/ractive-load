@@ -1,5 +1,5 @@
 import Ractive from 'ractive';
-import rcu from 'rcu';
+import * as rcu from 'rcu';
 import loadSingle from './single';
 
 // Create globally-available components from links found on the page:

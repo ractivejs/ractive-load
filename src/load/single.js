@@ -1,5 +1,5 @@
 import Ractive from 'ractive';
-import rcu from 'rcu';
+import * as rcu from 'rcu';
 import get from '../utils/get';
 import load from '../load';
 
