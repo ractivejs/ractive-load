@@ -2,15 +2,15 @@ import buble from 'rollup-plugin-buble';
 import nodeResolve from 'rollup-plugin-node-resolve';
 
 export default {
-	entry: 'src/load.js',
-	moduleName: 'Ractive.load',
+	input: 'src/load.js',
 	plugins: [
 		buble(),
 		nodeResolve({
-			jsnext: true,
-			skip: [ 'ractive' ]
+			jsnext: true
 		})
 	],
-	external: [ 'ractive' ],
-	globals: { ractive: 'Ractive' }
+	output: {
+		name: 'Ractive.load',
+		globals: { ractive: 'Ractive' }
+	}
 };

@@ -11,7 +11,7 @@ import loadSingle from './single';
 //       var bar = new components.bar(...);
 //     });
 export default function loadMultiple ( map, baseUrl, cache ) {
-	var promise = new Ractive.Promise( function ( resolve, reject ) {
+	var promise = new Promise( function ( resolve, reject ) {
 		var pending = 0, result = {}, name, load;
 
 		load = function ( name ) {
