@@ -1,5 +1,9 @@
 # changelog
 
+## 0.7.0
+* Update dependencies.
+* Usages of Ractive.Promise replaced with native Promise.
+
 ## 0.6.0
 
 * Overhaul build process etc
