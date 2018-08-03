@@ -1,0 +1,2 @@
+# Use Unix EOLs by default even on Windows because the linebreak-style in .eslintrc can't be made dynamic like the Window's default git behavior
+* text=auto eol=lf
